@@ -1,0 +1,8 @@
+{
+  "title": "Sample Buku",
+  "chapters": [
+    { "title": "Bab 1 - Awal", "startPage": 1 },
+    { "title": "Bab 2 - Tengah", "startPage": 11 },
+    { "title": "Bab 3 - Akhir", "startPage": 21 }
+  ]
+}
