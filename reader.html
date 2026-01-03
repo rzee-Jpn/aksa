@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Book Reader</title>
+
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/reader.css">
+<link rel="stylesheet" href="css/theme.css">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.min.js"></script>
+</head>
+
+<body class="theme-paper">
+
+<header class="reader-header">
+  <button id="backBtn">←</button>
+  <div id="bookTitle">Memuat…</div>
+</header>
+
+<main id="panelContainer"></main>
+
+<footer class="reader-footer">
+  <button id="prevBtn">◀</button>
+  <span id="pageInfo">0 / 0</span>
+  <button id="nextBtn">▶</button>
+</footer>
+
+<script src="js/reader-pdf.js"></script>
+<script src="js/reader-ui.js"></script>
+<script src="js/progress.js"></script>
+</body>
+</html>
