@@ -1,0 +1,37 @@
+.reader-header,
+.reader-footer {
+  position: fixed;
+  left: 0;
+  width: 100%;
+  background: #fff;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: .6rem 1rem;
+  border-bottom: 1px solid #ddd;
+}
+
+.reader-footer {
+  bottom: 0;
+  border-top: 1px solid #ddd;
+  border-bottom: none;
+}
+
+.reader-header {
+  top: 0;
+}
+
+#panelContainer {
+  padding: 70px 10px 70px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  align-items: center;
+}
+
+canvas {
+  max-width: 100%;
+  box-shadow: 0 2px 12px rgba(0,0,0,.15);
+  border-radius: 6px;
+}
