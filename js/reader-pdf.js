@@ -2,79 +2,83 @@ const params = new URLSearchParams(location.search);
 const bookId = params.get("book");
 
 const container = document.getElementById("panelContainer");
-const pageInfo = document.getElementById("pageInfo");
-const titleBox = document.getElementById("bookTitle");
+const pageInfo  = document.getElementById("pageInfo");
+const titleBox  = document.getElementById("bookTitle");
 
-const BASE = "data/books";
+const PDF_BASE = "https://cdn.jsdelivr.net/gh/rzee-Jpn/aksa@main/data/books";
 
 let pdfDoc = null;
 let currentPage = 1;
-let panelSize = 3;
+let panelSize = 10;
 let totalPages = 0;
 
+/* ========== VALIDASI ========= */
 if (!bookId) {
-  container.innerHTML = "❌ parameter book tidak ada";
-  throw "NO BOOK";
+  container.innerHTML = "<p style='text-align:center'>❌ Parameter ?book= tidak ada</p>";
+  throw new Error("Missing book param");
 }
 
-/* meta */
-fetch(`${BASE}/${bookId}/meta.json`)
+/* ========== META ========= */
+fetch(`${PDF_BASE}/${bookId}/meta.json`)
   .then(r => r.json())
-  .then(m => titleBox.textContent = m.title)
+  .then(meta => titleBox.textContent = meta.title)
   .catch(() => titleBox.textContent = bookId);
 
-/* PDF */
-container.innerHTML = "📄 Memuat buku…";
-
-pdfjsLib.getDocument(`${BASE}/${bookId}/book.pdf`).promise
+/* ========== LOAD PDF ========= */
+pdfjsLib.getDocument(`${PDF_BASE}/${bookId}/book.pdf`).promise
 .then(pdf => {
   pdfDoc = pdf;
   totalPages = pdf.numPages;
 
-  console.log("PDF OK:", totalPages, "halaman");
+  const saved = localStorage.getItem(bookId + "_page");
+  if (saved) currentPage = parseInt(saved);
 
-  render();
+  renderPanel();
 })
 .catch(err => {
   console.error(err);
-  container.innerHTML = "❌ PDF gagal dimuat";
+  container.innerHTML = "<p style='text-align:center'>❌ PDF gagal dimuat</p>";
 });
 
-function render() {
+/* ========== RENDER PANEL ========= */
+function renderPanel() {
   container.innerHTML = "";
+
   const start = currentPage;
-  const end = Math.min(start + panelSize - 1, totalPages);
+  const end   = Math.min(start + panelSize - 1, totalPages);
 
-  for (let i = start; i <= end; i++) {
-    pdfDoc.getPage(i).then(page => {
-      const canvas = document.createElement("canvas");
-      const ctx = canvas.getContext("2d");
+  for (let i = start; i <= end; i++) renderPage(i);
 
-      const v = page.getViewport({ scale: 1.4 });
-      canvas.width = v.width;
-      canvas.height = v.height;
-      canvas.style.display = "block";
-      canvas.style.margin = "0 auto 1.5rem";
-
-      container.appendChild(canvas);
-      page.render({ canvasContext: ctx, viewport: v });
-    });
-  }
-
-  pageInfo.textContent = `${start}–${end} / ${totalPages}`;
+  pageInfo.textContent = `Hal ${start}–${end} / ${totalPages}`;
+  localStorage.setItem(bookId + "_page", start);
 }
 
+/* ========== RENDER PAGE ========= */
+function renderPage(num) {
+  pdfDoc.getPage(num).then(page => {
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+
+    const viewport = page.getViewport({ scale: 1.4 });
+    canvas.width  = viewport.width;
+    canvas.height = viewport.height;
+
+    container.appendChild(canvas);
+    page.render({ canvasContext: ctx, viewport });
+  });
+}
+
+/* ========== NAV ========= */
 document.getElementById("nextBtn").onclick = () => {
   if (currentPage + panelSize <= totalPages) {
     currentPage += panelSize;
-    render();
+    renderPanel();
   }
 };
 
 document.getElementById("prevBtn").onclick = () => {
-  if (currentPage > 1) {
+  if (currentPage - panelSize >= 1) {
     currentPage -= panelSize;
-    if (currentPage < 1) currentPage = 1;
-    render();
+    renderPanel();
   }
 };
