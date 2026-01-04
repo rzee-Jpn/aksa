@@ -4,12 +4,12 @@
 
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: system-ui, sans-serif;
   background: #f4f6f8;
   color: #222;
 }
 
-/* ================= TOP BAR ================= */
+/* ================= HEADER ================= */
 .topbar {
   position: sticky;
   top: 0;
@@ -18,26 +18,25 @@ body {
   border-bottom: 1px solid #ddd;
   padding: .6rem 1rem;
   display: flex;
-  align-items: center;
   gap: 1rem;
+  align-items: center;
 }
 
 .brand {
   font-weight: 700;
-  line-height: 1.1;
 }
 
 .brand span {
   font-size: .75rem;
   color: #666;
+  display: block;
 }
 
 .topbar input {
   flex: 1;
   padding: .5rem .7rem;
-  border-radius: 8px;
+  border-radius: 6px;
   border: 1px solid #ccc;
-  font-size: .9rem;
 }
 
 /* ================= LAYOUT ================= */
@@ -48,15 +47,15 @@ body {
 
 /* ================= SIDEBAR ================= */
 .sidebar {
-  width: 220px;
+  width: 200px;
   background: #fff;
   border-right: 1px solid #ddd;
   padding: 1rem;
 }
 
 .sidebar h3 {
-  margin: 0 0 .5rem;
-  font-size: .95rem;
+  margin-top: 0;
+  font-size: 1rem;
 }
 
 .sidebar ul {
@@ -68,7 +67,6 @@ body {
 .sidebar li {
   padding: .4rem 0;
   cursor: pointer;
-  font-size: .85rem;
   color: #333;
 }
 
@@ -88,7 +86,7 @@ section {
 
 section h2 {
   margin: 0 0 .8rem;
-  font-size: 1.05rem;
+  font-size: 1.1rem;
 }
 
 /* ================= BOOK GRID ================= */
@@ -100,21 +98,20 @@ section h2 {
 
 .book-card {
   background: #fff;
-  border-radius: 12px;
+  border-radius: 10px;
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0,0,0,.08);
   cursor: pointer;
-  transition: transform .15s, box-shadow .15s;
+  transition: transform .15s;
 }
 
 .book-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 6px 16px rgba(0,0,0,.12);
 }
 
 .book-card img {
   width: 100%;
-  height: 210px;
+  height: 200px;
   object-fit: cover;
   background: #eee;
 }
