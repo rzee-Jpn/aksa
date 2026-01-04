@@ -1,46 +1,33 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8">
-  <title>PDF TEST</title>
+<meta charset="utf-8">
+<title>PDF TEST</title>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.min.js"></script>
-  <script>
-    pdfjsLib.GlobalWorkerOptions.workerSrc =
-      "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.worker.min.js";
-  </script>
-
-  <style>
-    body { margin:0; padding:0; text-align:center; background:#eee }
-    canvas { margin:20px auto; display:block; background:white }
-  </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.min.js"></script>
+<script>
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+  "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.worker.min.js";
+</script>
 </head>
 
 <body>
 <h2>PDF TEST</h2>
+<div id="log"></div>
 
 <script>
-pdfjsLib.getDocument("data/books/babad-jawi/book.pdf").promise
-.then(pdf => {
-  console.log("PDF LOADED", pdf.numPages);
-  return pdf.getPage(1);
-})
-.then(page => {
-  const canvas = document.createElement("canvas");
-  document.body.appendChild(canvas);
+const log = m => document.getElementById("log").innerHTML += "<br>" + m;
 
-  const ctx = canvas.getContext("2d");
-  const viewport = page.getViewport({ scale: 1.5 });
-  canvas.width = viewport.width;
-  canvas.height = viewport.height;
-
-  page.render({ canvasContext: ctx, viewport });
-})
-.catch(err => {
-  console.error("ERROR:", err);
-  document.body.innerHTML += "<p>❌ PDF GAGAL</p>";
+pdfjsLib.getDocument(
+  "https://cdn.jsdelivr.net/gh/rzee-Jpn/aksa@main/data/books/babad-jawi/book.pdf"
+).promise.then(pdf => {
+  log("✅ PDF OK");
+  log("Jumlah halaman: " + pdf.numPages);
+}).catch(err => {
+  log("❌ ERROR");
+  log(err.message);
+  console.error(err);
 });
 </script>
-
 </body>
 </html>
