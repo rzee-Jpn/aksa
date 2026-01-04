@@ -6,10 +6,10 @@ const ZOOM_STEP = 0.1;
 const params = new URLSearchParams(location.search);
 const bookId = params.get("book");
 
-const container  = document.getElementById("panelContainer");
-const pageInfo   = document.getElementById("pageInfo");
-const titleBox   = document.getElementById("bookTitle");
-const zoomDisplay= document.getElementById("zoomLevelDisplay");
+const container   = document.getElementById("panelContainer");
+const pageInfo    = document.getElementById("pageInfo");
+const titleBox    = document.getElementById("bookTitle");
+const zoomDisplay = document.getElementById("zoomLevelDisplay");
 
 const PDF_BASE = "https://cdn.jsdelivr.net/gh/rzee-Jpn/aksa@main/data/books";
 
@@ -56,22 +56,19 @@ function renderPanel(){
 
   pageInfo.textContent = `Hal ${start}–${end} / ${totalPages}`;
   localStorage.setItem(bookId+"_page", start);
+
+  applyZoom(); // update zoom CSS
 }
 
-/* ===== Render Page dengan zoom responsif ===== */
+/* ===== Render Page ===== */
 function renderPage(num){
   pdfDoc.getPage(num).then(page=>{
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
 
-    // scale otomatis agar sesuai width container
-    const viewport = page.getViewport({ scale: zoomLevel });
+    const viewport = page.getViewport({ scale: 1.4 });
     canvas.width  = viewport.width;
     canvas.height = viewport.height;
-    canvas.style.width  = "100%";
-    canvas.style.height = "auto";
-    canvas.style.display = "block";
-    canvas.style.margin = "10px auto";
 
     container.appendChild(canvas);
     page.render({ canvasContext: ctx, viewport });
@@ -93,21 +90,24 @@ document.getElementById("prevBtn").onclick = ()=>{
   }
 };
 
-/* ===== Zoom Control ===== */
-function updateZoomDisplay(){
+/* ===== Zoom Visual (CSS scale) ===== */
+function applyZoom(){
+  const canvases = container.querySelectorAll("canvas");
+  canvases.forEach(c=>{
+    c.style.transformOrigin = "top center";
+    c.style.transform = `scale(${zoomLevel})`;
+  });
   zoomDisplay.textContent = `${Math.round(zoomLevel*100)}%`;
 }
 
 document.getElementById("zoomIn").onclick = ()=>{
   zoomLevel = Math.min(ZOOM_MAX, zoomLevel + ZOOM_STEP);
-  updateZoomDisplay();
-  renderPanel();
+  applyZoom();
 };
 
 document.getElementById("zoomOut").onclick = ()=>{
   zoomLevel = Math.max(ZOOM_MIN, zoomLevel - ZOOM_STEP);
-  updateZoomDisplay();
-  renderPanel();
+  applyZoom();
 };
 
 /* ===== Floating Zoom Hide on Scroll ===== */
