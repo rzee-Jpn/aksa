@@ -57,7 +57,7 @@ function renderPanel(){
   pageInfo.textContent = `Hal ${start}–${end} / ${totalPages}`;
   localStorage.setItem(bookId+"_page", start);
 
-  applyZoom(); // apply zoom setelah render
+  applyZoom(); // update zoom CSS
 }
 
 /* ===== Render Page ===== */
@@ -70,14 +70,7 @@ function renderPage(num){
     canvas.width  = viewport.width;
     canvas.height = viewport.height;
 
-    const wrapper = document.createElement("div");
-    wrapper.style.width = "100%";
-    wrapper.style.display = "flex";
-    wrapper.style.justifyContent = "center";
-    wrapper.appendChild(canvas);
-
-    container.appendChild(wrapper);
-
+    container.appendChild(canvas);
     page.render({ canvasContext: ctx, viewport });
   });
 }
@@ -97,26 +90,16 @@ document.getElementById("prevBtn").onclick = ()=>{
   }
 };
 
-/* ===== Zoom Function ===== */
+/* ===== Zoom Visual (CSS scale) ===== */
 function applyZoom(){
-  const wrappers = container.querySelectorAll("div");
-  const prevScroll = container.scrollTop; // simpan posisi scroll
-
-  wrappers.forEach(w=>{
-    const canvas = w.querySelector("canvas");
-    if(canvas){
-      canvas.style.width = `${zoomLevel * 100}%`;
-      canvas.style.height = "auto"; // maintain aspect ratio
-    }
+  const canvases = container.querySelectorAll("canvas");
+  canvases.forEach(c=>{
+    c.style.transformOrigin = "top center";
+    c.style.transform = `scale(${zoomLevel})`;
   });
-
-  // Auto adjust scroll supaya halaman tetap visible
-  container.scrollTop = prevScroll + (zoomLevel-1) * 200; // 200 kira2 tinggi panel, bisa disesuaikan
-
-  if(zoomDisplay) zoomDisplay.textContent = `${Math.round(zoomLevel*100)}%`;
+  zoomDisplay.textContent = `${Math.round(zoomLevel*100)}%`;
 }
 
-/* ===== Zoom Controls ===== */
 document.getElementById("zoomIn").onclick = ()=>{
   zoomLevel = Math.min(ZOOM_MAX, zoomLevel + ZOOM_STEP);
   applyZoom();
@@ -131,7 +114,6 @@ document.getElementById("zoomOut").onclick = ()=>{
 let scrollTimeout;
 window.addEventListener("scroll", ()=>{
   const zoomCtrl = document.getElementById("zoomControl");
-  if(!zoomCtrl) return;
   zoomCtrl.style.opacity = "1";
   clearTimeout(scrollTimeout);
   scrollTimeout = setTimeout(()=> zoomCtrl.style.opacity="0", 1500);
