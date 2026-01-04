@@ -1,4 +1,6 @@
-let zoomLevel = 1.4;
+let zoomLevel = 1;
+let baseScale = 1;
+
 const ZOOM_MIN = 0.6;
 const ZOOM_MAX = 2.5;
 const ZOOM_STEP = 0.1;
@@ -16,6 +18,7 @@ let pdfDoc = null;
 let currentPage = 1;
 let panelSize   = 10;
 let totalPages  = 0;
+let isLocked    = false;
 
 /* ===== Validasi ===== */
 if(!bookId){
@@ -30,9 +33,16 @@ fetch(`${PDF_BASE}/${bookId}/meta.json`)
   .catch(() => titleBox.textContent = bookId);
 
 /* ===== Load PDF ===== */
-pdfjsLib.getDocument(`${PDF_BASE}/${bookId}/book.pdf`).promise.then(pdf=>{
+pdfjsLib.getDocument(`${PDF_BASE}/${bookId}/book.pdf`).promise
+.then(async pdf=>{
   pdfDoc = pdf;
   totalPages = pdf.numPages;
+
+  const page = await pdf.getPage(1);
+  const viewport = page.getViewport({ scale: 1 });
+
+  baseScale = (container.clientWidth - 20) / viewport.width;
+  zoomLevel = baseScale;
 
   const saved = localStorage.getItem(bookId+"_page");
   if(saved) currentPage = parseInt(saved);
@@ -51,11 +61,13 @@ function renderPanel(){
     renderPage(i);
   }
 
-  pageInfo.textContent = `Hal ${start}–${end} / ${totalPages}`;
+  const percent = Math.round((zoomLevel / baseScale) * 100);
+  pageInfo.textContent = `Zoom ${percent}% | Hal ${start}–${end} / ${totalPages}`;
+
   localStorage.setItem(bookId+"_page", start);
 }
 
-/* ===== Render Page (REAL ZOOM) ===== */
+/* ===== Render Page ===== */
 function renderPage(num){
   pdfDoc.getPage(num).then(page=>{
     const viewport = page.getViewport({ scale: zoomLevel });
@@ -92,7 +104,7 @@ document.getElementById("prevBtn").onclick = ()=>{
   }
 };
 
-/* ===== Zoom Control (RENDER ULANG) ===== */
+/* ===== Zoom Control ===== */
 document.getElementById("zoomIn").onclick = ()=>{
   zoomLevel = Math.min(ZOOM_MAX, zoomLevel + ZOOM_STEP);
   renderPanel();
@@ -101,4 +113,16 @@ document.getElementById("zoomIn").onclick = ()=>{
 document.getElementById("zoomOut").onclick = ()=>{
   zoomLevel = Math.max(ZOOM_MIN, zoomLevel - ZOOM_STEP);
   renderPanel();
+};
+
+/* ===== LOCK HORIZONTAL SCROLL ===== */
+document.getElementById("lockBtn").onclick = ()=>{
+  isLocked = !isLocked;
+
+  if(isLocked){
+    container.classList.add("lock-x");
+    container.scrollLeft = 0;
+  } else {
+    container.classList.remove("lock-x");
+  }
 };
