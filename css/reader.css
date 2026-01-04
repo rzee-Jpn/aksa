@@ -34,23 +34,21 @@
   flex-direction: column;
   gap: 24px;
 
-  /* ⬇️ JANGAN CENTER */
   align-items: flex-start;
-
-  /* ⬇️ SCROLL HORIZONTAL AKTIF */
   overflow-x: auto;
 }
 
+/* ===== LOCK HORIZONTAL SCROLL ===== */
+#panelContainer.lock-x {
+  overflow-x: hidden;
+}
+
 /* ==============================
-   CANVAS WRAPPER (ANCHOR LEFT)
+   CANVAS WRAPPER
 ============================== */
 .canvasWrapper {
   width: max-content;
-
-  /* ⬇️ PENTING: jangan auto-center */
   margin: 0;
-
-  /* ⬇️ jangan clip */
   overflow: visible;
 }
 
