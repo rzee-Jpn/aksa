@@ -1,31 +1,47 @@
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+  "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.worker.min.js";
+
 const params = new URLSearchParams(location.search);
 const bookId = params.get("book");
 
 const container = document.getElementById("panelContainer");
 const pageInfo = document.getElementById("pageInfo");
-const titleBox = document.getElementById("bookTitle");
 
 let pdfDoc = null;
 let currentPage = 1;
-let panelSize = 10;
+const panelSize = 10;
 let totalPages = 0;
 
-fetch(`data/books/${bookId}/meta.json`)
-  .then(r => r.json())
-  .then(meta => titleBox.textContent = meta.title);
+// ===== GUARD =====
+if (!bookId) {
+  container.innerHTML = "<p style='padding:2rem'>Buku tidak ditemukan</p>";
+  throw new Error("Book ID missing");
+}
 
-pdfjsLib.getDocument(`data/books/${bookId}/book.pdf`).promise.then(pdf => {
-  pdfDoc = pdf;
-  totalPages = pdf.numPages;
+// ===== LOAD PDF =====
+const pdfPath = `data/books/${bookId}/book.pdf`;
 
-  const saved = localStorage.getItem(bookId + "_page");
-  if (saved) currentPage = parseInt(saved);
+pdfjsLib.getDocument(pdfPath).promise
+  .then(pdf => {
+    pdfDoc = pdf;
+    totalPages = pdf.numPages;
 
-  renderPanel();
-});
+    const saved = localStorage.getItem(bookId + "_page");
+    if (saved) currentPage = parseInt(saved);
 
+    renderPanel();
+  })
+  .catch(err => {
+    container.innerHTML = `<p style="padding:2rem;color:red">
+      Gagal memuat PDF<br>${err.message}
+    </p>`;
+    console.error(err);
+  });
+
+// ===== RENDER PANEL =====
 function renderPanel() {
   container.innerHTML = "";
+
   const start = currentPage;
   const end = Math.min(start + panelSize - 1, totalPages);
 
@@ -33,7 +49,7 @@ function renderPanel() {
     renderPage(i);
   }
 
-  pageInfo.textContent = `Hal ${start}–${end} / ${totalPages}`;
+  pageInfo.textContent = `${start}–${end} / ${totalPages}`;
   localStorage.setItem(bookId + "_page", start);
 }
 
@@ -46,11 +62,15 @@ function renderPage(num) {
     canvas.width = viewport.width;
     canvas.height = viewport.height;
 
+    canvas.style.display = "block";
+    canvas.style.margin = "0 auto 1.5rem";
+
     container.appendChild(canvas);
     page.render({ canvasContext: ctx, viewport });
   });
 }
 
+// ===== NAVIGATION =====
 document.getElementById("nextBtn").onclick = () => {
   if (currentPage + panelSize <= totalPages) {
     currentPage += panelSize;
