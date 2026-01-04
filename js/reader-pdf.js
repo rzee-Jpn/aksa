@@ -3,6 +3,8 @@ const ZOOM_MIN = 0.6;
 const ZOOM_MAX = 2.5;
 const ZOOM_STEP = 0.1;
 
+let isHD = false;
+
 const params = new URLSearchParams(location.search);
 const bookId = params.get("book");
 
@@ -10,6 +12,7 @@ const container = document.getElementById("panelContainer");
 const pageInfo  = document.getElementById("pageInfo");
 const titleBox  = document.getElementById("bookTitle");
 const zoomLabel = document.getElementById("zoomLevelDisplay");
+const hdBtn     = document.getElementById("hdToggle");
 
 const PDF_BASE = "https://cdn.jsdelivr.net/gh/rzee-Jpn/aksa@main/data/books";
 
@@ -62,13 +65,13 @@ function renderPanel(){
   updateZoomLabel();
 }
 
-/* ===== Render Page (TAJAM / DPR AWARE) ===== */
+/* ===== Render Page ===== */
 function renderPage(num){
   pdfDoc.getPage(num).then(page=>{
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const dpr = isHD ? Math.min(window.devicePixelRatio || 1, 2) : 1;
 
     const viewport = page.getViewport({ scale: zoomLevel });
-    const hiResViewport = page.getViewport({
+    const renderViewport = page.getViewport({
       scale: zoomLevel * dpr
     });
 
@@ -78,11 +81,9 @@ function renderPage(num){
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
 
-    // resolusi nyata (tajam)
-    canvas.width  = hiResViewport.width;
-    canvas.height = hiResViewport.height;
+    canvas.width  = renderViewport.width;
+    canvas.height = renderViewport.height;
 
-    // ukuran tampilan (layout)
     canvas.style.width  = viewport.width + "px";
     canvas.style.height = viewport.height + "px";
 
@@ -91,7 +92,7 @@ function renderPage(num){
 
     page.render({
       canvasContext: ctx,
-      viewport: hiResViewport
+      viewport: renderViewport
     });
   });
 }
@@ -122,18 +123,19 @@ document.getElementById("zoomOut").onclick = ()=>{
   renderPanel();
 };
 
+/* ===== HD Toggle ===== */
+hdBtn.onclick = ()=>{
+  isHD = !isHD;
+  hdBtn.textContent = isHD ? "HD ON" : "HD OFF";
+  renderPanel();
+};
+
 /* ===== Scroll Lock ===== */
 let isLocked = false;
 const lockBtn = document.getElementById("lockScroll");
 
 lockBtn.onclick = ()=>{
   isLocked = !isLocked;
-
-  if(isLocked){
-    container.classList.add("lock-x");
-    lockBtn.textContent = "🔒";
-  } else {
-    container.classList.remove("lock-x");
-    lockBtn.textContent = "🔓";
-  }
+  container.classList.toggle("lock-x", isLocked);
+  lockBtn.textContent = isLocked ? "🔒" : "🔓";
 };
