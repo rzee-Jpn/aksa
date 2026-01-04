@@ -10,12 +10,39 @@
 <link rel="stylesheet" href="css/reader.css">
 <link rel="stylesheet" href="css/theme.css">
 
-<!-- PDF.JS (VERSI STABIL) -->
+<!-- PDF.JS STABIL -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script>
 pdfjsLib.GlobalWorkerOptions.workerSrc =
   "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
 </script>
+
+<style>
+/* Zoom floating button */
+#zoomControls {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: rgba(240,240,240,0.9);
+  border-radius: 12px;
+  padding: 6px;
+  display: flex;
+  gap: 4px;
+  z-index: 999;
+  transition: opacity 0.3s;
+}
+#zoomControls button {
+  width: 32px;
+  height: 32px;
+  font-size: 18px;
+  border: none;
+  border-radius: 6px;
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  cursor: pointer;
+}
+#zoomControls.hide { opacity: 0; pointer-events: none; }
+</style>
 </head>
 
 <body class="theme-paper">
@@ -25,16 +52,32 @@ pdfjsLib.GlobalWorkerOptions.workerSrc =
   <div id="bookTitle">Memuat…</div>
 </header>
 
-<main id="panelContainer"></main>
+<main id="panelContainer" style="overflow-y:auto; height:calc(100vh - 60px);"></main>
 
 <footer class="reader-footer">
-  <button id="zoomOut">−</button>
   <button id="prevBtn">◀</button>
   <span id="pageInfo">0 / 0</span>
   <button id="nextBtn">▶</button>
-  <button id="zoomIn">＋</button>
 </footer>
 
+<!-- Floating Zoom -->
+<div id="zoomControls">
+  <button id="zoomOut">−</button>
+  <button id="zoomIn">＋</button>
+</div>
+
 <script src="js/reader-pdf.js"></script>
+<script>
+/* Scroll hide zoom */
+let panelContainer = document.getElementById("panelContainer");
+let zoomBox = document.getElementById("zoomControls");
+let scrollTimeout;
+panelContainer.addEventListener("scroll", () => {
+  zoomBox.classList.add("hide");
+  clearTimeout(scrollTimeout);
+  scrollTimeout = setTimeout(() => zoomBox.classList.remove("hide"), 800);
+});
+</script>
+
 </body>
 </html>
