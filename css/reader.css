@@ -1,3 +1,6 @@
+/* ==============================
+   HEADER & FOOTER (FIXED)
+============================== */
 .reader-header,
 .reader-footer {
   position: fixed;
@@ -12,16 +15,19 @@
   border-bottom: 1px solid #ddd;
 }
 
+.reader-header {
+  top: 0;
+}
+
 .reader-footer {
   bottom: 0;
   border-top: 1px solid #ddd;
   border-bottom: none;
 }
 
-.reader-header {
-  top: 0;
-}
-
+/* ==============================
+   MAIN PANEL
+============================== */
 #panelContainer {
   padding: 70px 10px 70px;
   display: flex;
@@ -30,8 +36,24 @@
   align-items: center;
 }
 
+/* ==============================
+   CANVAS WRAPPER (ANTI OVERLAP)
+============================== */
+.canvasWrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* ==============================
+   PDF CANVAS (FIX ZOOM)
+============================== */
 canvas {
-  max-width: 100%;
+  display: block;                 /* penting: hilangkan inline spacing */
+  width: auto;                    /* jangan dipaksa responsive */
+  max-width: none;                /* disable max-width:100% */
+  height: auto;
   box-shadow: 0 2px 12px rgba(0,0,0,.15);
   border-radius: 6px;
 }
