@@ -1,15 +1,15 @@
 {
-  "id": "serat-kancil",
-  "title": "Serat Kancil",
+  "id": "babad-jawi",
+  "title": "Babad Tanah Jawi
   "subtitle": "Naskah Jawa Kuno",
   "author": "Anonim",
-  "editor": "Anglumea Archive",
-  "language": "jv",
+  "editor": "Anglumea",
+  "language": "English",
   "script": "Jawa",
   "category": ["Manuskrip", "Sastra Klasik"],
   "tags": ["kuno", "jawa", "naskah", "arsip"],
   "year": "1800-an",
-  "description": "Serat Kancil adalah naskah sastra Jawa klasik yang berisi kisah-kisah simbolik dengan nilai moral dan filosofi.",
+  "description": Babad Tanah Jawi adalah naskah sastra Jawa klasik yang berisi kisah-kisah simbolik dengan nilai moral dan filosofi.",
   "cover": "cover.jpg",
   "pdf": "book.pdf",
 
