@@ -15,9 +15,7 @@
   border-bottom: 1px solid #ddd;
 }
 
-.reader-header {
-  top: 0;
-}
+.reader-header { top: 0; }
 
 .reader-footer {
   bottom: 0;
@@ -35,18 +33,16 @@
   gap: 24px;
   align-items: flex-start;
   overflow-x: auto;
+  overflow-y: auto;
 }
 
-/* LOCK / UNLOCK HORIZONTAL */
+/* LOCK horizontal scroll */
 #panelContainer.lock-x {
   overflow-x: hidden;
 }
-#panelContainer.unlock-x {
-  overflow-x: auto;
-}
 
 /* ==============================
-   CANVAS
+   CANVAS WRAPPER
 ============================== */
 .canvasWrapper {
   width: max-content;
@@ -54,6 +50,9 @@
   overflow: visible;
 }
 
+/* ==============================
+   PDF CANVAS
+============================== */
 canvas {
   display: block;
   width: auto;
@@ -63,7 +62,7 @@ canvas {
 }
 
 /* ==============================
-   FLOATING ZOOM CONTROL (FIXED)
+   ZOOM CONTROL
 ============================== */
 #zoomControl {
   position: fixed;
@@ -86,9 +85,5 @@ canvas {
   padding: 2px 8px;
   font-weight: bold;
   border-radius: 4px;
-  cursor: pointer;
-}
-
-#zoomLevelDisplay {
   cursor: pointer;
 }
