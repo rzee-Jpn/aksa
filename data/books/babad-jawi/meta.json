@@ -1,23 +1,20 @@
 {
   "id": "babad-jawi",
   "title": "Babad Tanah Jawi",
-  "subtitle": "Naskah Jawa Kuno",
-  "author": "Anonim",
-  "editor": "Anglumea",
-  "language": "English",
+  "subtitle": "Revised Prose Version",
+  "author": ""C.F. Winter Sr",
+  "editor": "Willem Remmelink",
+  "language": "English; Javanese",
   "script": "Jawa",
   "category": [
     "Manuskrip",
     "Sastra Klasik"
   ],
   "tags": [
-    "kuno",
-    "jawa",
-    "naskah",
-    "arsip"
+    javanese", "history", "prose", "early-modern", "java
   ],
   "year": "1800-an",
-  "description": "Babad Tanah Jawi adalah naskah sastra Jawa klasik yang berisi kisah-kisah simbolik dengan nilai moral dan filosofi.",
+  "description": A revised prose version of the Babad Tanah Jawi originally prepared by C.F. Winter Sr. as an early attempt to standardize formal Javanese prose, presenting Javanese history from its beginnings until 1742, published with Javanese script and English translation.",
   "cover": "cover.jpg",
   "pdf": "book.pdf",
   "reading": {
@@ -26,11 +23,12 @@
     "rtl": false
   },
   "source": {
-    "origin": "Perpustakaan Nasional RI",
-    "collection": "Manuskrip Nusantara",
-    "catalog_id": "PNRI-XXX-123",
-    "license": "Public Domain"
+    "origin": "Leiden University Press",
+    "collection": "LUP Academic",
+    "catalog_id": "9789087283810",
+    "license": "CC BY-NC-ND 4.0"
   },
-  "created_at": "2024-11-01",
-  "updated_at": "2025-01-01"
+
+  "created_at": "2022-01-01",
+  "updated_at": "2022-01-01"
 }
