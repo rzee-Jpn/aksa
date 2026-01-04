@@ -63,7 +63,7 @@ function renderPage(num) {
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
 
-    const viewport = page.getViewport({ scale: 1.4 });
+    const viewport = page.getViewport({ scale: zoomLevel });
     canvas.width  = viewport.width;
     canvas.height = viewport.height;
 
