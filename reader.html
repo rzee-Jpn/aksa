@@ -6,9 +6,7 @@
 
 <title>Book Reader</title>
 
-<link rel="stylesheet" href="css/base.css">
-<link rel="stylesheet" href="css/reader.css">
-<link rel="stylesheet" href="css/theme.css">
+<link rel="stylesheet" href="reader.css">
 
 <!-- PDF.JS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
@@ -16,52 +14,12 @@
 pdfjsLib.GlobalWorkerOptions.workerSrc =
   "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
 </script>
-
-<style>
-#panelContainer {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  overflow-y: auto;
-}
-
-#panelContainer canvas {
-  display: block;
-  margin: 10px 0;
-  max-width: 100%;
-}
-
-#zoomControl {
-  position: fixed;
-  bottom: 80px;
-  right: 20px;
-  background: rgba(0,0,0,0.6);
-  color: #fff;
-  border-radius: 6px;
-  padding: 8px 10px;
-  display: flex;
-  gap: 6px;
-  font-size: 1.1rem;
-  z-index: 999;
-  transition: opacity 0.3s ease;
-}
-
-#zoomControl button {
-  background: #fff;
-  color: #000;
-  border: none;
-  padding: 2px 8px;
-  font-weight: bold;
-  border-radius: 4px;
-  cursor: pointer;
-}
-</style>
 </head>
 
-<body class="theme-paper">
+<body>
 
 <header class="reader-header">
-  <button id="backBtn" onclick="history.back()">←</button>
+  <button onclick="history.back()">←</button>
   <div id="bookTitle">Memuat…</div>
 </header>
 
@@ -73,13 +31,14 @@ pdfjsLib.GlobalWorkerOptions.workerSrc =
   <button id="nextBtn">▶</button>
 </footer>
 
-<!-- Floating Zoom Control -->
+<!-- Floating Zoom + Lock -->
 <div id="zoomControl">
   <button id="zoomOut">−</button>
   <span id="zoomLevelDisplay">100%</span>
   <button id="zoomIn">＋</button>
+  <button id="lockBtn">🔒</button>
 </div>
 
-<script src="js/reader-pdf.js"></script>
+<script src="reader-pdf.js"></script>
 </body>
 </html>
