@@ -1,6 +1,6 @@
 {
   "id": "babad-jawi",
-  "title": "Babad Tanah Jawi
+  "title": "Babad Tanah Jawi",
   "subtitle": "Naskah Jawa Kuno",
   "author": "Anonim",
   "editor": "Anglumea",
@@ -9,7 +9,7 @@
   "category": ["Manuskrip", "Sastra Klasik"],
   "tags": ["kuno", "jawa", "naskah", "arsip"],
   "year": "1800-an",
-  "description": Babad Tanah Jawi adalah naskah sastra Jawa klasik yang berisi kisah-kisah simbolik dengan nilai moral dan filosofi.",
+  "description": "Babad Tanah Jawi adalah naskah sastra Jawa klasik yang berisi kisah-kisah simbolik dengan nilai moral dan filosofi.",
   "cover": "cover.jpg",
   "pdf": "book.pdf",
 
