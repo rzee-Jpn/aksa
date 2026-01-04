@@ -9,7 +9,6 @@ const bookId = params.get("book");
 const container   = document.getElementById("panelContainer");
 const pageInfo    = document.getElementById("pageInfo");
 const titleBox    = document.getElementById("bookTitle");
-const zoomDisplay = document.getElementById("zoomLevelDisplay");
 
 const PDF_BASE = "https://cdn.jsdelivr.net/gh/rzee-Jpn/aksa@main/data/books";
 
@@ -60,18 +59,29 @@ function renderPanel(){
   applyZoom(); // update zoom CSS
 }
 
-/* ===== Render Page ===== */
+/* ===== Render Page dengan wrapper ===== */
 function renderPage(num){
   pdfDoc.getPage(num).then(page=>{
+    const wrapper = document.createElement("div");
+    wrapper.className = "canvasWrapper";
+    wrapper.style.margin = "10px 0";
+    wrapper.style.overflow = "hidden";
+
     const canvas = document.createElement("canvas");
+    canvas.className = "pdfCanvas";
     const ctx = canvas.getContext("2d");
 
     const viewport = page.getViewport({ scale: 1.4 });
     canvas.width  = viewport.width;
     canvas.height = viewport.height;
 
-    container.appendChild(canvas);
-    page.render({ canvasContext: ctx, viewport });
+    wrapper.appendChild(canvas);
+    container.appendChild(wrapper);
+
+    page.render({ canvasContext: ctx, viewport }).promise.then(() => {
+      // pastikan wrapper ikut tinggi canvas
+      wrapper.style.height = `${canvas.height * zoomLevel}px`;
+    });
   });
 }
 
@@ -90,14 +100,15 @@ document.getElementById("prevBtn").onclick = ()=>{
   }
 };
 
-/* ===== Zoom Visual (CSS scale) ===== */
+/* ===== Zoom CSS ===== */
 function applyZoom(){
-  const canvases = container.querySelectorAll("canvas");
-  canvases.forEach(c=>{
-    c.style.transformOrigin = "top center";
-    c.style.transform = `scale(${zoomLevel})`;
+  const wrappers = container.querySelectorAll(".canvasWrapper");
+  wrappers.forEach(wrapper=>{
+    const canvas = wrapper.querySelector("canvas");
+    canvas.style.transformOrigin = "top center";
+    canvas.style.transform = `scale(${zoomLevel})`;
+    wrapper.style.height = `${canvas.height * zoomLevel}px`; // kunci jarak antar canvas
   });
-  zoomDisplay.textContent = `${Math.round(zoomLevel*100)}%`;
 }
 
 document.getElementById("zoomIn").onclick = ()=>{
@@ -109,12 +120,3 @@ document.getElementById("zoomOut").onclick = ()=>{
   zoomLevel = Math.max(ZOOM_MIN, zoomLevel - ZOOM_STEP);
   applyZoom();
 };
-
-/* ===== Floating Zoom Hide on Scroll ===== */
-let scrollTimeout;
-window.addEventListener("scroll", ()=>{
-  const zoomCtrl = document.getElementById("zoomControl");
-  zoomCtrl.style.opacity = "1";
-  clearTimeout(scrollTimeout);
-  scrollTimeout = setTimeout(()=> zoomCtrl.style.opacity="0", 1500);
-});
