@@ -1,5 +1,5 @@
 /* ==============================
-   HEADER & FOOTER (FIXED)
+   HEADER & FOOTER
 ============================== */
 .reader-header,
 .reader-footer {
@@ -26,34 +26,42 @@
 }
 
 /* ==============================
-   MAIN PANEL
+   MAIN PANEL (PENTING)
 ============================== */
 #panelContainer {
   padding: 70px 10px 70px;
   display: flex;
   flex-direction: column;
   gap: 24px;
-  align-items: center;
+
+  /* ⬇️ JANGAN CENTER */
+  align-items: stretch;
+
+  /* ⬇️ IZINKAN SCROLL KE SAMPING */
+  overflow-x: auto;
 }
 
 /* ==============================
-   CANVAS WRAPPER (ANTI OVERLAP)
+   CANVAS WRAPPER (JANGAN CLIP)
 ============================== */
 .canvasWrapper {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  overflow: hidden;
+  width: max-content;
+  margin: 0 auto;
+
+  /* ⬇️ PENTING: jangan potong canvas */
+  overflow: visible;
 }
 
 /* ==============================
-   PDF CANVAS (FIX ZOOM)
+   PDF CANVAS
 ============================== */
 canvas {
-  display: block;                 /* penting: hilangkan inline spacing */
-  width: auto;                    /* jangan dipaksa responsive */
-  max-width: none;                /* disable max-width:100% */
+  display: block;
+
+  /* ⬇️ ukuran asli dari PDF.js */
+  width: auto;
   height: auto;
+
   box-shadow: 0 2px 12px rgba(0,0,0,.15);
   border-radius: 6px;
 }
