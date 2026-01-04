@@ -49,14 +49,16 @@ pdfjsLib.getDocument(`${PDF_BASE}/${bookId}/book.pdf`).promise
 function renderPanel(){
   container.innerHTML = "";
   const start = currentPage;
-  const end   = Math.min(currentPage + panelSize -1, totalPages);
+  const end   = Math.min(currentPage + panelSize - 1, totalPages);
 
-  for(let i=start;i<=end;i++) renderPage(i);
+  for(let i = start; i <= end; i++){
+    renderPage(i);
+  }
 
   pageInfo.textContent = `Hal ${start}–${end} / ${totalPages}`;
   localStorage.setItem(bookId+"_page", start);
 
-  applyZoom(); // pastikan zoom diterapkan
+  applyZoom();
 }
 
 /* ===== Render Page ===== */
@@ -68,8 +70,6 @@ function renderPage(num){
     wrapper.className = "canvasWrapper";
     wrapper.style.margin = "10px 0";
     wrapper.style.overflow = "hidden";
-    // Set tinggi wrapper dulu sesuai zoom
-    wrapper.style.height = `${viewport.height * zoomLevel}px`;
 
     const canvas = document.createElement("canvas");
     canvas.className = "pdfCanvas";
@@ -79,11 +79,12 @@ function renderPage(num){
     wrapper.appendChild(canvas);
     container.appendChild(wrapper);
 
-    // Render PDF di canvas
-    page.render({ canvasContext: canvas.getContext("2d"), viewport }).promise.then(() => {
-      // pastikan canvas scale sudah diterapkan
-      canvas.style.transformOrigin = "top center";
-      canvas.style.transform = `scale(${zoomLevel})`;
+    page.render({
+      canvasContext: canvas.getContext("2d"),
+      viewport
+    }).promise.then(()=>{
+      canvas.style.zoom = zoomLevel;
+      wrapper.style.height = `${canvas.height * zoomLevel}px`;
     });
   });
 }
@@ -103,15 +104,13 @@ document.getElementById("prevBtn").onclick = ()=>{
   }
 };
 
-/* ===== Zoom Control ===== */
+/* ===== Zoom Control (FIX NO OVERLAP) ===== */
 function applyZoom(){
   const wrappers = container.querySelectorAll(".canvasWrapper");
   wrappers.forEach(wrapper=>{
     const canvas = wrapper.querySelector("canvas");
-    // update transform
-    canvas.style.transformOrigin = "top center";
-    canvas.style.transform = `scale(${zoomLevel})`;
-    // update wrapper height sesuai zoom
+
+    canvas.style.zoom = zoomLevel;
     wrapper.style.height = `${canvas.height * zoomLevel}px`;
   });
 }
