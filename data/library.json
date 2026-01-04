@@ -1,19 +1,9 @@
 {
   "version": "1.0",
   "updated": "2025-01-01",
-  "total_books": 2,
+  "total_books": 1,
 
   "books": [
-    {
-      "id": "serat-kancil",
-      "title": "Serat Kancil",
-      "author": "Anonim",
-      "year": "1800-an",
-      "language": "Jawa",
-      "category": "Manuskrip",
-      "cover": "data/books/serat-kancil/cover.jpg",
-      "path": "reader.html?book=serat-kancil"
-    },
     {
       "id": "babad-jawi",
       "title": "Babad Tanah Jawi",
