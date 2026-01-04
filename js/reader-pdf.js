@@ -1,3 +1,7 @@
+let zoomLevel = 1.4;
+const ZOOM_MIN = 0.8;
+const ZOOM_MAX = 2.5;
+
 const params = new URLSearchParams(location.search);
 const bookId = params.get("book");
 
