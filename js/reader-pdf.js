@@ -5,78 +5,76 @@ const container = document.getElementById("panelContainer");
 const pageInfo = document.getElementById("pageInfo");
 const titleBox = document.getElementById("bookTitle");
 
-const PDF_BASE = "data/books"; // 🔥 FIX UTAMA
+const BASE = "data/books";
 
 let pdfDoc = null;
 let currentPage = 1;
-let panelSize = 5;
+let panelSize = 3;
 let totalPages = 0;
 
 if (!bookId) {
-  container.innerHTML = "<p>❌ parameter ?book= tidak ada</p>";
-  throw new Error("book param missing");
+  container.innerHTML = "❌ parameter book tidak ada";
+  throw "NO BOOK";
 }
 
 /* meta */
-fetch(`${PDF_BASE}/${bookId}/meta.json`)
+fetch(`${BASE}/${bookId}/meta.json`)
   .then(r => r.json())
   .then(m => titleBox.textContent = m.title)
   .catch(() => titleBox.textContent = bookId);
 
 /* PDF */
-container.innerHTML = "<p>📄 Memuat buku…</p>";
+container.innerHTML = "📄 Memuat buku…";
 
-pdfjsLib.getDocument(`${PDF_BASE}/${bookId}/book.pdf`).promise
-  .then(pdf => {
-    pdfDoc = pdf;
-    totalPages = pdf.numPages;
+pdfjsLib.getDocument(`${BASE}/${bookId}/book.pdf`).promise
+.then(pdf => {
+  pdfDoc = pdf;
+  totalPages = pdf.numPages;
 
-    const saved = localStorage.getItem(bookId + "_page");
-    if (saved) currentPage = parseInt(saved);
+  console.log("PDF OK:", totalPages, "halaman");
 
-    renderPanel();
-  })
-  .catch(err => {
-    console.error(err);
-    container.innerHTML = "<p>❌ PDF gagal dimuat</p>";
-  });
+  render();
+})
+.catch(err => {
+  console.error(err);
+  container.innerHTML = "❌ PDF gagal dimuat";
+});
 
-function renderPanel() {
+function render() {
   container.innerHTML = "";
   const start = currentPage;
   const end = Math.min(start + panelSize - 1, totalPages);
 
-  for (let i = start; i <= end; i++) renderPage(i);
+  for (let i = start; i <= end; i++) {
+    pdfDoc.getPage(i).then(page => {
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
 
-  pageInfo.textContent = `Hal ${start}–${end} / ${totalPages}`;
-  localStorage.setItem(bookId + "_page", start);
-}
+      const v = page.getViewport({ scale: 1.4 });
+      canvas.width = v.width;
+      canvas.height = v.height;
+      canvas.style.display = "block";
+      canvas.style.margin = "0 auto 1.5rem";
 
-function renderPage(num) {
-  pdfDoc.getPage(num).then(page => {
-    const canvas = document.createElement("canvas");
-    const ctx = canvas.getContext("2d");
+      container.appendChild(canvas);
+      page.render({ canvasContext: ctx, viewport: v });
+    });
+  }
 
-    const viewport = page.getViewport({ scale: 1.4 });
-    canvas.width = viewport.width;
-    canvas.height = viewport.height;
-    canvas.style.marginBottom = "1.5rem";
-
-    container.appendChild(canvas);
-    page.render({ canvasContext: ctx, viewport });
-  });
+  pageInfo.textContent = `${start}–${end} / ${totalPages}`;
 }
 
 document.getElementById("nextBtn").onclick = () => {
   if (currentPage + panelSize <= totalPages) {
     currentPage += panelSize;
-    renderPanel();
+    render();
   }
 };
 
 document.getElementById("prevBtn").onclick = () => {
-  if (currentPage - panelSize >= 1) {
+  if (currentPage > 1) {
     currentPage -= panelSize;
-    renderPanel();
+    if (currentPage < 1) currentPage = 1;
+    render();
   }
 };
