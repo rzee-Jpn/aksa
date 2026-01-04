@@ -1,5 +1,5 @@
 /* ==============================
-   ROOT & BODY (WAJIB)
+   ROOT & BODY
 ============================== */
 html, body {
   margin: 0;
@@ -40,7 +40,7 @@ html, body {
 }
 
 /* ==============================
-   MAIN PANEL (FIX INTI)
+   MAIN PANEL
 ============================== */
 #panelContainer {
   position: fixed;
@@ -64,7 +64,6 @@ html, body {
   -webkit-overflow-scrolling: touch;
 }
 
-/* LOCK horizontal scroll */
 #panelContainer.lock-x {
   overflow-x: hidden;
 }
