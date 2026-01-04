@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Library</title>
 
 <link rel="stylesheet" href="css/library.css">
@@ -10,7 +10,6 @@
 
 <body>
 
-<!-- Header -->
 <header class="topbar">
   <div class="brand">
     📚 Library
@@ -20,32 +19,18 @@
 </header>
 
 <div class="layout">
-
-  <!-- Sidebar -->
   <aside class="sidebar">
-    <h3>Kategori</h3>
+    <h4>📂 Kategori</h4>
     <ul id="categoryList"></ul>
+
+    <h4>🆕 Terbaru</h4>
+    <ul id="latestList"></ul>
+
+    <h4>🔥 Populer</h4>
+    <ul id="popularList"></ul>
   </aside>
 
-  <!-- Main Content -->
-  <main class="content">
-
-    <section>
-      <h2>🆕 Terbaru</h2>
-      <div class="book-grid" id="latestBooks"></div>
-    </section>
-
-    <section>
-      <h2>🔥 Populer</h2>
-      <div class="book-grid" id="popularBooks"></div>
-    </section>
-
-    <section>
-      <h2>📚 Semua Buku</h2>
-      <div class="book-grid" id="allBooks"></div>
-    </section>
-
-  </main>
+  <main id="library"></main>
 </div>
 
 <script src="js/library.js"></script>
