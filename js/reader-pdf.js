@@ -1,5 +1,5 @@
-let zoomLevel = 1.0;
-const ZOOM_MIN = 0.5;
+let zoomLevel = 1.4;
+const ZOOM_MIN = 0.6;
 const ZOOM_MAX = 2.5;
 const ZOOM_STEP = 0.1;
 
@@ -30,8 +30,7 @@ fetch(`${PDF_BASE}/${bookId}/meta.json`)
   .catch(() => titleBox.textContent = bookId);
 
 /* ===== Load PDF ===== */
-pdfjsLib.getDocument(`${PDF_BASE}/${bookId}/book.pdf`).promise
-.then(pdf=>{
+pdfjsLib.getDocument(`${PDF_BASE}/${bookId}/book.pdf`).promise.then(pdf=>{
   pdfDoc = pdf;
   totalPages = pdf.numPages;
 
@@ -39,15 +38,12 @@ pdfjsLib.getDocument(`${PDF_BASE}/${bookId}/book.pdf`).promise
   if(saved) currentPage = parseInt(saved);
 
   renderPanel();
-})
-.catch(err=>{
-  console.error(err);
-  container.innerHTML = "<p style='text-align:center'>❌ PDF gagal dimuat</p>";
 });
 
 /* ===== Render Panel ===== */
 function renderPanel(){
   container.innerHTML = "";
+
   const start = currentPage;
   const end   = Math.min(currentPage + panelSize - 1, totalPages);
 
@@ -57,22 +53,17 @@ function renderPanel(){
 
   pageInfo.textContent = `Hal ${start}–${end} / ${totalPages}`;
   localStorage.setItem(bookId+"_page", start);
-
-  applyZoom();
 }
 
-/* ===== Render Page ===== */
+/* ===== Render Page (REAL ZOOM) ===== */
 function renderPage(num){
   pdfDoc.getPage(num).then(page=>{
-    const viewport = page.getViewport({ scale: 1.4 });
+    const viewport = page.getViewport({ scale: zoomLevel });
 
     const wrapper = document.createElement("div");
     wrapper.className = "canvasWrapper";
-    wrapper.style.margin = "10px 0";
-    wrapper.style.overflow = "hidden";
 
     const canvas = document.createElement("canvas");
-    canvas.className = "pdfCanvas";
     canvas.width  = viewport.width;
     canvas.height = viewport.height;
 
@@ -82,9 +73,6 @@ function renderPage(num){
     page.render({
       canvasContext: canvas.getContext("2d"),
       viewport
-    }).promise.then(()=>{
-      canvas.style.zoom = zoomLevel;
-      wrapper.style.height = `${canvas.height * zoomLevel}px`;
     });
   });
 }
@@ -104,23 +92,13 @@ document.getElementById("prevBtn").onclick = ()=>{
   }
 };
 
-/* ===== Zoom Control (FIX NO OVERLAP) ===== */
-function applyZoom(){
-  const wrappers = container.querySelectorAll(".canvasWrapper");
-  wrappers.forEach(wrapper=>{
-    const canvas = wrapper.querySelector("canvas");
-
-    canvas.style.zoom = zoomLevel;
-    wrapper.style.height = `${canvas.height * zoomLevel}px`;
-  });
-}
-
+/* ===== Zoom Control (RENDER ULANG) ===== */
 document.getElementById("zoomIn").onclick = ()=>{
   zoomLevel = Math.min(ZOOM_MAX, zoomLevel + ZOOM_STEP);
-  applyZoom();
+  renderPanel();
 };
 
 document.getElementById("zoomOut").onclick = ()=>{
   zoomLevel = Math.max(ZOOM_MIN, zoomLevel - ZOOM_STEP);
-  applyZoom();
+  renderPanel();
 };
