@@ -62,24 +62,36 @@ function renderPanel(){
   updateZoomLabel();
 }
 
-/* ===== Render Page ===== */
+/* ===== Render Page (TAJAM / DPR AWARE) ===== */
 function renderPage(num){
   pdfDoc.getPage(num).then(page=>{
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
     const viewport = page.getViewport({ scale: zoomLevel });
+    const hiResViewport = page.getViewport({
+      scale: zoomLevel * dpr
+    });
 
     const wrapper = document.createElement("div");
     wrapper.className = "canvasWrapper";
 
     const canvas = document.createElement("canvas");
-    canvas.width  = viewport.width;
-    canvas.height = viewport.height;
+    const ctx = canvas.getContext("2d");
+
+    // resolusi nyata (tajam)
+    canvas.width  = hiResViewport.width;
+    canvas.height = hiResViewport.height;
+
+    // ukuran tampilan (layout)
+    canvas.style.width  = viewport.width + "px";
+    canvas.style.height = viewport.height + "px";
 
     wrapper.appendChild(canvas);
     container.appendChild(wrapper);
 
     page.render({
-      canvasContext: canvas.getContext("2d"),
-      viewport
+      canvasContext: ctx,
+      viewport: hiResViewport
     });
   });
 }
