@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-
 <title>Book Reader</title>
 
-<link rel="stylesheet" href="reader.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/reader.css">
+<link rel="stylesheet" href="css/theme.css">
 
-<!-- PDF.JS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script>
 pdfjsLib.GlobalWorkerOptions.workerSrc =
@@ -16,7 +16,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc =
 </script>
 </head>
 
-<body>
+<body class="theme-paper">
 
 <header class="reader-header">
   <button onclick="history.back()">←</button>
@@ -31,14 +31,12 @@ pdfjsLib.GlobalWorkerOptions.workerSrc =
   <button id="nextBtn">▶</button>
 </footer>
 
-<!-- Floating Zoom + Lock -->
 <div id="zoomControl">
   <button id="zoomOut">−</button>
   <span id="zoomLevelDisplay">100%</span>
   <button id="zoomIn">＋</button>
-  <button id="lockBtn">🔒</button>
 </div>
 
-<script src="reader-pdf.js"></script>
+<script src="js/reader-pdf.js"></script>
 </body>
 </html>
