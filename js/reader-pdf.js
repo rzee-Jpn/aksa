@@ -1,6 +1,12 @@
 const params = new URLSearchParams(location.search);
 const bookId = params.get("book");
 
+if (!bookId) {
+  document.getElementById("panelContainer").innerHTML =
+    "<p>❌ Book ID tidak ditemukan</p>";
+  throw new Error("book param missing");
+}
+
 const container = document.getElementById("panelContainer");
 const pageInfo = document.getElementById("pageInfo");
 const titleBox = document.getElementById("bookTitle");
@@ -12,29 +18,37 @@ let currentPage = 1;
 let panelSize = 10;
 let totalPages = 0;
 
+// load meta
 fetch(`${PDF_BASE}/${bookId}/meta.json`)
   .then(r => r.json())
-  .then(meta => titleBox.textContent = meta.title);
+  .then(meta => titleBox.textContent = meta.title)
+  .catch(() => titleBox.textContent = bookId);
 
-pdfjsLib.getDocument(`${PDF_BASE}/${bookId}/book.pdf`).promise.then(pdf => {
-  pdfDoc = pdf;
-  totalPages = pdf.numPages;
+// load pdf
+pdfjsLib.getDocument(`${PDF_BASE}/${bookId}/book.pdf`).promise
+  .then(pdf => {
+    pdfDoc = pdf;
+    totalPages = pdf.numPages;
 
-  const saved = localStorage.getItem(bookId + "_page");
-  if (saved) currentPage = parseInt(saved);
+    const saved = localStorage.getItem(bookId + "_page");
+    if (saved) currentPage = parseInt(saved);
 
-  renderPanel();
-}).catch(err => {
-  container.innerHTML = "<p>❌ PDF tidak dapat dimuat</p>";
-  console.error(err);
-});
+    renderPanel();
+  })
+  .catch(err => {
+    container.innerHTML = "<p>❌ PDF tidak dapat dimuat</p>";
+    console.error(err);
+  });
 
 function renderPanel() {
   container.innerHTML = "";
+
   const start = currentPage;
   const end = Math.min(start + panelSize - 1, totalPages);
 
-  for (let i = start; i <= end; i++) renderPage(i);
+  for (let i = start; i <= end; i++) {
+    renderPage(i);
+  }
 
   pageInfo.textContent = `Hal ${start}–${end} / ${totalPages}`;
   localStorage.setItem(bookId + "_page", start);
