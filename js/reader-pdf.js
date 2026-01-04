@@ -1,5 +1,4 @@
 let zoomLevel = 1.4;
-const BASE_ZOOM = 1.4;
 const ZOOM_MIN = 0.6;
 const ZOOM_MAX = 2.5;
 const ZOOM_STEP = 0.1;
@@ -10,7 +9,7 @@ const bookId = params.get("book");
 const container = document.getElementById("panelContainer");
 const pageInfo  = document.getElementById("pageInfo");
 const titleBox  = document.getElementById("bookTitle");
-const zoomText  = document.getElementById("zoomLevelDisplay");
+const zoomLabel = document.getElementById("zoomLevelDisplay");
 
 const PDF_BASE = "https://cdn.jsdelivr.net/gh/rzee-Jpn/aksa@main/data/books";
 
@@ -18,7 +17,11 @@ let pdfDoc = null;
 let currentPage = 1;
 let panelSize   = 10;
 let totalPages  = 0;
-let lockHorizontal = true;
+
+/* ===== Zoom label ===== */
+function updateZoomLabel(){
+  zoomLabel.textContent = Math.round(zoomLevel * 100) + "%";
+}
 
 /* ===== Validasi ===== */
 if(!bookId){
@@ -40,9 +43,7 @@ pdfjsLib.getDocument(`${PDF_BASE}/${bookId}/book.pdf`).promise.then(pdf=>{
   const saved = localStorage.getItem(bookId+"_page");
   if(saved) currentPage = parseInt(saved);
 
-  container.classList.add("lock-x");
   renderPanel();
-  updateZoomDisplay();
 });
 
 /* ===== Render Panel ===== */
@@ -58,6 +59,7 @@ function renderPanel(){
 
   pageInfo.textContent = `Hal ${start}–${end} / ${totalPages}`;
   localStorage.setItem(bookId+"_page", start);
+  updateZoomLabel();
 }
 
 /* ===== Render Page ===== */
@@ -82,12 +84,6 @@ function renderPage(num){
   });
 }
 
-/* ===== Zoom Display ===== */
-function updateZoomDisplay(){
-  const percent = Math.round((zoomLevel / BASE_ZOOM) * 100);
-  zoomText.textContent = percent + "%";
-}
-
 /* ===== Navigation ===== */
 document.getElementById("nextBtn").onclick = ()=>{
   if(currentPage + panelSize <= totalPages){
@@ -107,18 +103,25 @@ document.getElementById("prevBtn").onclick = ()=>{
 document.getElementById("zoomIn").onclick = ()=>{
   zoomLevel = Math.min(ZOOM_MAX, zoomLevel + ZOOM_STEP);
   renderPanel();
-  updateZoomDisplay();
 };
 
 document.getElementById("zoomOut").onclick = ()=>{
   zoomLevel = Math.max(ZOOM_MIN, zoomLevel - ZOOM_STEP);
   renderPanel();
-  updateZoomDisplay();
 };
 
-/* ===== LOCK / UNLOCK (klik %) ===== */
-zoomText.onclick = ()=>{
-  lockHorizontal = !lockHorizontal;
-  container.classList.toggle("lock-x", lockHorizontal);
-  container.classList.toggle("unlock-x", !lockHorizontal);
+/* ===== Scroll Lock ===== */
+let isLocked = false;
+const lockBtn = document.getElementById("lockScroll");
+
+lockBtn.onclick = ()=>{
+  isLocked = !isLocked;
+
+  if(isLocked){
+    container.classList.add("lock-x");
+    lockBtn.textContent = "🔒";
+  } else {
+    container.classList.remove("lock-x");
+    lockBtn.textContent = "🔓";
+  }
 };
