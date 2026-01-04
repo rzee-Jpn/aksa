@@ -1,5 +1,6 @@
 let zoomLevel = 1;
 let baseScale = 1;
+let isLocked = false;
 
 const ZOOM_MIN = 0.6;
 const ZOOM_MAX = 2.5;
@@ -18,10 +19,9 @@ let pdfDoc = null;
 let currentPage = 1;
 let panelSize   = 10;
 let totalPages  = 0;
-let isLocked    = false;
 
 /* ===== Validasi ===== */
-if(!bookId){
+if (!bookId) {
   container.innerHTML = "<p style='text-align:center'>❌ Parameter ?book= tidak ada</p>";
   throw new Error("Missing book param");
 }
@@ -33,8 +33,7 @@ fetch(`${PDF_BASE}/${bookId}/meta.json`)
   .catch(() => titleBox.textContent = bookId);
 
 /* ===== Load PDF ===== */
-pdfjsLib.getDocument(`${PDF_BASE}/${bookId}/book.pdf`).promise
-.then(async pdf=>{
+pdfjsLib.getDocument(`${PDF_BASE}/${bookId}/book.pdf`).promise.then(async pdf => {
   pdfDoc = pdf;
   totalPages = pdf.numPages;
 
@@ -42,34 +41,34 @@ pdfjsLib.getDocument(`${PDF_BASE}/${bookId}/book.pdf`).promise
   const viewport = page.getViewport({ scale: 1 });
 
   baseScale = (container.clientWidth - 20) / viewport.width;
-  zoomLevel = baseScale;
+  zoomLevel = baseScale; // FIT WIDTH = 100%
 
-  const saved = localStorage.getItem(bookId+"_page");
-  if(saved) currentPage = parseInt(saved);
+  const saved = localStorage.getItem(bookId + "_page");
+  if (saved) currentPage = parseInt(saved);
 
   renderPanel();
 });
 
 /* ===== Render Panel ===== */
-function renderPanel(){
+function renderPanel() {
   container.innerHTML = "";
 
   const start = currentPage;
   const end   = Math.min(currentPage + panelSize - 1, totalPages);
 
-  for(let i = start; i <= end; i++){
+  for (let i = start; i <= end; i++) {
     renderPage(i);
   }
 
-  const percent = Math.round((zoomLevel / baseScale) * 100);
-  pageInfo.textContent = `Zoom ${percent}% | Hal ${start}–${end} / ${totalPages}`;
+  const zoomPercent = Math.round((zoomLevel / baseScale) * 100);
+  pageInfo.textContent = `Zoom ${zoomPercent}% | Hal ${start}–${end} / ${totalPages}`;
 
-  localStorage.setItem(bookId+"_page", start);
+  localStorage.setItem(bookId + "_page", start);
 }
 
 /* ===== Render Page ===== */
-function renderPage(num){
-  pdfDoc.getPage(num).then(page=>{
+function renderPage(num) {
+  pdfDoc.getPage(num).then(page => {
     const viewport = page.getViewport({ scale: zoomLevel });
 
     const wrapper = document.createElement("div");
@@ -90,36 +89,36 @@ function renderPage(num){
 }
 
 /* ===== Navigation ===== */
-document.getElementById("nextBtn").onclick = ()=>{
-  if(currentPage + panelSize <= totalPages){
+document.getElementById("nextBtn").onclick = () => {
+  if (currentPage + panelSize <= totalPages) {
     currentPage += panelSize;
     renderPanel();
   }
 };
 
-document.getElementById("prevBtn").onclick = ()=>{
-  if(currentPage - panelSize >= 1){
+document.getElementById("prevBtn").onclick = () => {
+  if (currentPage - panelSize >= 1) {
     currentPage -= panelSize;
     renderPanel();
   }
 };
 
 /* ===== Zoom Control ===== */
-document.getElementById("zoomIn").onclick = ()=>{
+document.getElementById("zoomIn").onclick = () => {
   zoomLevel = Math.min(ZOOM_MAX, zoomLevel + ZOOM_STEP);
   renderPanel();
 };
 
-document.getElementById("zoomOut").onclick = ()=>{
+document.getElementById("zoomOut").onclick = () => {
   zoomLevel = Math.max(ZOOM_MIN, zoomLevel - ZOOM_STEP);
   renderPanel();
 };
 
-/* ===== LOCK HORIZONTAL SCROLL ===== */
-document.getElementById("lockBtn").onclick = ()=>{
+/* ===== Lock Horizontal Scroll ===== */
+document.getElementById("lockBtn").onclick = () => {
   isLocked = !isLocked;
 
-  if(isLocked){
+  if (isLocked) {
     container.classList.add("lock-x");
     container.scrollLeft = 0;
   } else {
