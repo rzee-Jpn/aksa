@@ -1,17 +1,37 @@
 {
   "id": "babad-jawi",
   "title": "Babad Tanah Jawi",
-  "subtitle": "Naskah Jawa Kuno",
-  "author": "Anonim",
-  "editor": "Anglumea",
-  "language": "English",
-  "script": "Jawa",
-  "category": ["Manuskrip", "Sastra Klasik"],
-  "tags": ["kuno", "jawa", "naskah", "arsip"],
-  "year": "1800-an",
-  "description": "Babad Tanah Jawi adalah naskah sastra Jawa klasik yang berisi kisah-kisah simbolik dengan nilai moral dan filosofi.",
-  "cover": "cover.jpg",
-  "pdf": "book.pdf",
+  "subtitle": "The Revised Prose Version",
+  "author": "C.F. Winter Sr.",
+  "editor": "Willem Remmelink",
+  "language": ["English", "Javanese"],
+  "script": ["Javanese", "Latin"],
+  "category": [
+    "Javanese Literature",
+    "Asian History",
+    "Early Modern History"
+  ],
+  "tags": [
+    "babad",
+    "tanah jawi",
+    "javanese history",
+    "javanese prose",
+    "classical java",
+    "manuscript studies"
+  ],
+  "year": 2022,
+  "description": "This publication presents the revised prose version of the Babad Tanah Jawi originally prepared by C.F. Winter Sr. in the nineteenth century. Intended as a model for formal Javanese prose, the text offers a Javanese perspective on Javanese history from its beginnings until 1742. Edited by Willem Remmelink, this edition includes the Javanese script text and an English translation, making an important early attempt at standardizing Javanese prose accessible to both linguists and historians.",
+  "pages": 1086,
+  "publisher": "Leiden University Press",
+  "imprint": "LUP Academic",
+  "publication_place": "Leiden",
+  "publisher_website": "https://www.lup.nl/",
+  "doi": "10.24415/9789087283711",
+  "isbn": [
+    "9789087283810",
+    "9789400604230"
+  ],
+  "uri": "https://library.oapen.org/handle/20.500.12657/52935",
 
   "reading": {
     "panelSize": 10,
@@ -20,12 +40,12 @@
   },
 
   "source": {
-    "origin": "Perpustakaan Nasional RI",
-    "collection": "Manuskrip Nusantara",
-    "catalog_id": "PNRI-XXX-123",
-    "license": "Public Domain"
+    "origin": "OAPEN Library",
+    "collection": "Leiden University Press Open Access",
+    "license": "CC BY-NC-ND 4.0",
+    "rights_url": "https://creativecommons.org/licenses/by-nc-nd/4.0/"
   },
 
-  "created_at": "2024-11-01",
-  "updated_at": "2025-01-01"
+  "created_at": "2022-01-01",
+  "updated_at": "2022-01-01"
 }
