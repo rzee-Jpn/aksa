@@ -2,61 +2,67 @@ fetch("data/library.json")
   .then(r => r.json())
   .then(data => {
     const books = data.books;
+    const lib = document.getElementById("library");
+    const search = document.getElementById("searchInput");
 
-    const allBooksEl = document.getElementById("allBooks");
-    const latestEl   = document.getElementById("latestBooks");
-    const popularEl  = document.getElementById("popularBooks");
-    const catListEl  = document.getElementById("categoryList");
-    const searchInp  = document.getElementById("searchInput");
+    const categoryList = document.getElementById("categoryList");
+    const latestList   = document.getElementById("latestList");
+    const popularList  = document.getElementById("popularList");
 
-    // ========= UTIL =========
-    function renderBooks(list, target) {
-      target.innerHTML = "";
-      list.forEach(b => {
-        const card = document.createElement("div");
-        card.className = "book-card";
-        card.innerHTML = `
-          <img src="${b.cover || ''}" alt="">
-          <div class="book-info">
-            <h4>${b.title}</h4>
-            <p>${b.author}</p>
-          </div>
-        `;
-        card.onclick = () => location.href = b.path;
-        target.appendChild(card);
-      });
-    }
+    renderBooks(books);
 
-    // ========= ALL =========
-    renderBooks(books, allBooksEl);
-
-    // ========= TERBARU =========
-    renderBooks(books.slice(-10).reverse(), latestEl);
-
-    // ========= POPULER (dummy/random) =========
-    renderBooks([...books].sort(() => 0.5 - Math.random()).slice(0, 6), popularEl);
-
-    // ========= KATEGORI =========
-    const categories = [...new Set(books.map(b => b.category))];
-    categories.forEach(cat => {
-      const li = document.createElement("li");
-      li.textContent = cat;
-      li.onclick = () => {
-        renderBooks(books.filter(b => b.category === cat), allBooksEl);
-      };
-      catListEl.appendChild(li);
-    });
-
-    // ========= SEARCH =========
-    searchInp.oninput = () => {
-      const q = searchInp.value.toLowerCase();
+    /* ===== SEARCH ===== */
+    search.oninput = () => {
+      const q = search.value.toLowerCase();
       renderBooks(
         books.filter(b =>
           b.title.toLowerCase().includes(q) ||
           b.author.toLowerCase().includes(q) ||
           b.category.toLowerCase().includes(q)
-        ),
-        allBooksEl
+        )
       );
     };
+
+    /* ===== KATEGORI ===== */
+    [...new Set(books.map(b => b.category))].forEach(cat => {
+      const li = document.createElement("li");
+      li.textContent = cat;
+      li.onclick = () => {
+        renderBooks(books.filter(b => b.category === cat));
+      };
+      categoryList.appendChild(li);
+    });
+
+    /* ===== TERBARU (10 TERAKHIR) ===== */
+    books.slice(-10).reverse().forEach(b => {
+      const li = document.createElement("li");
+      li.textContent = b.title;
+      li.onclick = () => location.href = b.path;
+      latestList.appendChild(li);
+    });
+
+    /* ===== POPULER (sementara urutan awal) ===== */
+    books.slice(0,5).forEach(b => {
+      const li = document.createElement("li");
+      li.textContent = b.title;
+      li.onclick = () => location.href = b.path;
+      popularList.appendChild(li);
+    });
+
+    /* ===== RENDER GRID ===== */
+    function renderBooks(list){
+      lib.innerHTML = "";
+      list.forEach(b => {
+        const div = document.createElement("div");
+        div.className = "book-card";
+        div.innerHTML = `
+          <img src="${b.cover}" alt="">
+          <h3>${b.title}</h3>
+          <p>${b.author}</p>
+          <p>${b.year} • ${b.language}</p>
+        `;
+        div.onclick = () => location.href = b.path;
+        lib.appendChild(div);
+      });
+    }
   });
