@@ -21,8 +21,8 @@
       "year": "1700-an",
       "language": "Jawa",
       "category": "Sejarah",
-      "cover": "data/books/babad-tanah-jawi/cover.jpg",
-      "path": "reader.html?book=babad-tanah-jawi"
+      "cover": "data/books/babad-jawi/cover.jpg",
+      "path": "reader.html?book=babad-jawi"
     }
   ]
 }
