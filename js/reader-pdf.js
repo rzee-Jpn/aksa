@@ -1,7 +1,4 @@
-let zoomLevel = 1;
-let baseScale = 1;
-let isLocked = false;
-
+let zoomLevel = 1.4;
 const ZOOM_MIN = 0.6;
 const ZOOM_MAX = 2.5;
 const ZOOM_STEP = 0.1;
@@ -9,9 +6,11 @@ const ZOOM_STEP = 0.1;
 const params = new URLSearchParams(location.search);
 const bookId = params.get("book");
 
-const container = document.getElementById("panelContainer");
-const pageInfo  = document.getElementById("pageInfo");
-const titleBox  = document.getElementById("bookTitle");
+const container   = document.getElementById("panelContainer");
+const pageInfo    = document.getElementById("pageInfo");
+const titleBox    = document.getElementById("bookTitle");
+const zoomPercent = document.getElementById("zoomPercent");
+const lockBtn     = document.getElementById("lockBtn");
 
 const PDF_BASE = "https://cdn.jsdelivr.net/gh/rzee-Jpn/aksa@main/data/books";
 
@@ -19,6 +18,7 @@ let pdfDoc = null;
 let currentPage = 1;
 let panelSize   = 10;
 let totalPages  = 0;
+let scrollLocked = false;
 
 /* ===== Validasi ===== */
 if (!bookId) {
@@ -33,19 +33,15 @@ fetch(`${PDF_BASE}/${bookId}/meta.json`)
   .catch(() => titleBox.textContent = bookId);
 
 /* ===== Load PDF ===== */
-pdfjsLib.getDocument(`${PDF_BASE}/${bookId}/book.pdf`).promise.then(async pdf => {
+pdfjsLib.getDocument(`${PDF_BASE}/${bookId}/book.pdf`).promise.then(pdf => {
   pdfDoc = pdf;
   totalPages = pdf.numPages;
-
-  const page = await pdf.getPage(1);
-  const viewport = page.getViewport({ scale: 1 });
-
-  baseScale = (container.clientWidth - 20) / viewport.width;
-  zoomLevel = baseScale; // FIT WIDTH = 100%
 
   const saved = localStorage.getItem(bookId + "_page");
   if (saved) currentPage = parseInt(saved);
 
+  updateZoomText();
+  updateScrollMode();
   renderPanel();
 });
 
@@ -60,13 +56,12 @@ function renderPanel() {
     renderPage(i);
   }
 
-  const zoomPercent = Math.round((zoomLevel / baseScale) * 100);
-  pageInfo.textContent = `Zoom ${zoomPercent}% | Hal ${start}–${end} / ${totalPages}`;
-
+  pageInfo.textContent = `Hal ${start}–${end} / ${totalPages}`;
   localStorage.setItem(bookId + "_page", start);
+  updateZoomText();
 }
 
-/* ===== Render Page ===== */
+/* ===== Render Page (REAL ZOOM) ===== */
 function renderPage(num) {
   pdfDoc.getPage(num).then(page => {
     const viewport = page.getViewport({ scale: zoomLevel });
@@ -103,7 +98,11 @@ document.getElementById("prevBtn").onclick = () => {
   }
 };
 
-/* ===== Zoom Control ===== */
+/* ===== Zoom ===== */
+function updateZoomText() {
+  zoomPercent.textContent = Math.round(zoomLevel * 100) + "%";
+}
+
 document.getElementById("zoomIn").onclick = () => {
   zoomLevel = Math.min(ZOOM_MAX, zoomLevel + ZOOM_STEP);
   renderPanel();
@@ -114,14 +113,23 @@ document.getElementById("zoomOut").onclick = () => {
   renderPanel();
 };
 
-/* ===== Lock Horizontal Scroll ===== */
-document.getElementById("lockBtn").onclick = () => {
-  isLocked = !isLocked;
-
-  if (isLocked) {
-    container.classList.add("lock-x");
-    container.scrollLeft = 0;
+/* ===== Lock / Unlock Scroll ===== */
+function updateScrollMode() {
+  if (scrollLocked) {
+    container.classList.add("lock-scroll");
+    container.classList.remove("unlock-scroll");
+    lockBtn.textContent = "🔒";
   } else {
-    container.classList.remove("lock-x");
+    container.classList.remove("lock-scroll");
+    container.classList.add("unlock-scroll");
+    lockBtn.textContent = "🔓";
   }
+}
+
+lockBtn.onclick = () => {
+  scrollLocked = !scrollLocked;
+  updateScrollMode();
 };
+
+/* default */
+container.classList.add("unlock-scroll");
