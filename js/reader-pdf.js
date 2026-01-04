@@ -1,6 +1,3 @@
-/* ===============================
-   KONFIGURASI
-================================ */
 let zoomLevel = 1.4;
 const ZOOM_MIN = 0.8;
 const ZOOM_MAX = 2.5;
@@ -8,9 +5,6 @@ const PANEL_SIZE = 10;
 
 const PDF_BASE = "https://cdn.jsdelivr.net/gh/rzee-Jpn/aksa@main/data/books";
 
-/* ===============================
-   PARAM & ELEMENT
-================================ */
 const params = new URLSearchParams(location.search);
 const bookId = params.get("book");
 
@@ -18,32 +12,22 @@ const container = document.getElementById("panelContainer");
 const pageInfo  = document.getElementById("pageInfo");
 const titleBox  = document.getElementById("bookTitle");
 
-/* ===============================
-   STATE
-================================ */
 let pdfDoc = null;
 let currentPage = 1;
 let totalPages = 0;
 
-/* ===============================
-   VALIDASI
-================================ */
 if (!bookId) {
   container.innerHTML = "<p style='text-align:center'>❌ Parameter ?book= tidak ada</p>";
   throw new Error("Missing book param");
 }
 
-/* ===============================
-   LOAD META
-================================ */
+// Load meta
 fetch(`${PDF_BASE}/${bookId}/meta.json`)
   .then(r => r.json())
   .then(meta => titleBox.textContent = meta.title)
   .catch(() => titleBox.textContent = bookId);
 
-/* ===============================
-   LOAD PDF
-================================ */
+// Load PDF
 pdfjsLib.getDocument(`${PDF_BASE}/${bookId}/book.pdf`).promise
 .then(pdf => {
   pdfDoc = pdf;
@@ -59,33 +43,32 @@ pdfjsLib.getDocument(`${PDF_BASE}/${bookId}/book.pdf`).promise
   container.innerHTML = "<p style='text-align:center'>❌ PDF gagal dimuat</p>";
 });
 
-/* ===============================
-   RENDER PANEL (10 HALAMAN)
-================================ */
+// Render panel
 function renderPanel() {
-  container.innerHTML = "";
-
   const start = currentPage;
-  const end = Math.min(start + PANEL_SIZE - 1, totalPages);
+  const end   = Math.min(start + PANEL_SIZE - 1, totalPages);
 
-  for (let i = start; i <= end; i++) {
-    renderPage(i);
-  }
+  // Reuse scroll pos
+  const scrollTop = container.scrollTop;
+
+  container.innerHTML = "";
+  for (let i = start; i <= end; i++) renderPage(i);
 
   pageInfo.textContent = `Hal ${start}–${end} / ${totalPages}`;
   localStorage.setItem(bookId + "_page", start);
+
+  // Restore scroll
+  container.scrollTop = scrollTop;
 }
 
-/* ===============================
-   RENDER HALAMAN
-================================ */
+// Render page
 function renderPage(num) {
   pdfDoc.getPage(num).then(page => {
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
 
     const viewport = page.getViewport({ scale: zoomLevel });
-    canvas.width = viewport.width;
+    canvas.width  = viewport.width;
     canvas.height = viewport.height;
 
     container.appendChild(canvas);
@@ -93,16 +76,13 @@ function renderPage(num) {
   });
 }
 
-/* ===============================
-   NAVIGASI PANEL
-================================ */
+// Panel nav
 document.getElementById("nextBtn").onclick = () => {
   if (currentPage + PANEL_SIZE <= totalPages) {
     currentPage += PANEL_SIZE;
     renderPanel();
   }
 };
-
 document.getElementById("prevBtn").onclick = () => {
   if (currentPage - PANEL_SIZE >= 1) {
     currentPage -= PANEL_SIZE;
@@ -110,19 +90,10 @@ document.getElementById("prevBtn").onclick = () => {
   }
 };
 
-/* ===============================
-   ZOOM
-================================ */
+// Floating Zoom
 document.getElementById("zoomIn").onclick = () => {
-  if (zoomLevel < ZOOM_MAX) {
-    zoomLevel += 0.2;
-    renderPanel();
-  }
+  if (zoomLevel < ZOOM_MAX) { zoomLevel += 0.2; renderPanel(); }
 };
-
 document.getElementById("zoomOut").onclick = () => {
-  if (zoomLevel > ZOOM_MIN) {
-    zoomLevel -= 0.2;
-    renderPanel();
-  }
+  if (zoomLevel > ZOOM_MIN) { zoomLevel -= 0.2; renderPanel(); }
 };
