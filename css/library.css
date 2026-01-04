@@ -9,7 +9,9 @@ body {
   color: #222;
 }
 
-/* ================= HEADER ================= */
+/* ======================
+   TOP BAR
+====================== */
 .topbar {
   position: sticky;
   top: 0;
@@ -18,18 +20,18 @@ body {
   border-bottom: 1px solid #ddd;
   padding: .6rem 1rem;
   display: flex;
-  gap: 1rem;
   align-items: center;
+  gap: 1rem;
 }
 
 .brand {
-  font-weight: 700;
+  font-weight: bold;
 }
 
 .brand span {
-  font-size: .75rem;
-  color: #666;
-  display: block;
+  font-size: .7rem;
+  color: #777;
+  margin-left: 4px;
 }
 
 .topbar input {
@@ -39,23 +41,28 @@ body {
   border: 1px solid #ccc;
 }
 
-/* ================= LAYOUT ================= */
+/* ======================
+   LAYOUT
+====================== */
 .layout {
   display: flex;
-  min-height: calc(100vh - 56px);
+  min-height: calc(100vh - 48px);
 }
 
-/* ================= SIDEBAR ================= */
+/* ======================
+   SIDEBAR
+====================== */
 .sidebar {
-  width: 200px;
+  width: 220px;
   background: #fff;
   border-right: 1px solid #ddd;
   padding: 1rem;
+  overflow-y: auto;
 }
 
-.sidebar h3 {
-  margin-top: 0;
-  font-size: 1rem;
+.sidebar h4 {
+  margin: 1rem 0 .4rem;
+  font-size: .9rem;
 }
 
 .sidebar ul {
@@ -65,81 +72,70 @@ body {
 }
 
 .sidebar li {
-  padding: .4rem 0;
+  font-size: .85rem;
+  padding: .3rem 0;
   cursor: pointer;
   color: #333;
 }
 
 .sidebar li:hover {
-  color: #0077ff;
+  text-decoration: underline;
 }
 
-/* ================= CONTENT ================= */
-.content {
+/* ======================
+   LIBRARY GRID
+====================== */
+#library {
   flex: 1;
   padding: 1rem;
-}
-
-section {
-  margin-bottom: 2rem;
-}
-
-section h2 {
-  margin: 0 0 .8rem;
-  font-size: 1.1rem;
-}
-
-/* ================= BOOK GRID ================= */
-.book-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(160px,1fr));
   gap: 1rem;
 }
 
+/* ======================
+   BOOK CARD
+====================== */
 .book-card {
   background: #fff;
   border-radius: 10px;
-  overflow: hidden;
+  padding: .7rem;
   box-shadow: 0 2px 8px rgba(0,0,0,.08);
   cursor: pointer;
-  transition: transform .15s;
+  display: flex;
+  flex-direction: column;
+  gap: .4rem;
+  transition: transform .15s ease;
 }
 
 .book-card:hover {
-  transform: translateY(-4px);
+  transform: translateY(-2px);
 }
 
 .book-card img {
   width: 100%;
-  height: 200px;
+  aspect-ratio: 3/4;
   object-fit: cover;
+  border-radius: 6px;
   background: #eee;
 }
 
-.book-info {
-  padding: .6rem;
-}
-
-.book-info h4 {
-  margin: 0;
+.book-card h3 {
   font-size: .9rem;
+  margin: .3rem 0 0;
 }
 
-.book-info p {
-  margin: .2rem 0 0;
+.book-card p {
   font-size: .75rem;
-  color: #555;
+  color: #666;
+  margin: 0;
 }
 
-/* ================= MOBILE ================= */
+/* ======================
+   MOBILE
+====================== */
 @media (max-width: 768px) {
-  .layout {
-    flex-direction: column;
-  }
-
   .sidebar {
-    width: 100%;
-    border-right: none;
-    border-bottom: 1px solid #ddd;
+    display: none;
   }
 }
