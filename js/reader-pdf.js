@@ -70,7 +70,15 @@ function renderPage(num){
     canvas.width  = viewport.width;
     canvas.height = viewport.height;
 
-    container.appendChild(canvas);
+    // canvas wrapper supaya bisa zoom width saja
+    const wrapper = document.createElement("div");
+    wrapper.style.width = "100%";
+    wrapper.style.display = "flex";
+    wrapper.style.justifyContent = "center";
+    wrapper.appendChild(canvas);
+
+    container.appendChild(wrapper);
+
     page.render({ canvasContext: ctx, viewport });
   });
 }
@@ -90,12 +98,15 @@ document.getElementById("prevBtn").onclick = ()=>{
   }
 };
 
-/* ===== Zoom Visual (CSS scale) ===== */
+/* ===== Zoom Visual (width only) ===== */
 function applyZoom(){
-  const canvases = container.querySelectorAll("canvas");
-  canvases.forEach(c=>{
-    c.style.transformOrigin = "top center";
-    c.style.transform = `scale(${zoomLevel})`;
+  const wrappers = container.querySelectorAll("div");
+  wrappers.forEach(w=>{
+    const canvas = w.querySelector("canvas");
+    if(canvas){
+      canvas.style.width = `${zoomLevel * 100}%`;
+      canvas.style.height = "auto"; // maintain aspect ratio
+    }
   });
   zoomDisplay.textContent = `${Math.round(zoomLevel*100)}%`;
 }
