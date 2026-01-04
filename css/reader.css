@@ -38,7 +38,7 @@
   overflow-x: auto;
 }
 
-/* ===== LOCK HORIZONTAL SCROLL ===== */
+/* ===== LOCK MODE (HORIZONTAL) ===== */
 #panelContainer.lock-x {
   overflow-x: hidden;
 }
