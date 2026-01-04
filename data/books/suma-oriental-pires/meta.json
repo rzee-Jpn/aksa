@@ -23,7 +23,7 @@
   "pdf": "book.pdf",
   "reading": {
     "panelSize": 10,
-    "defaultZoom": 1.3,
+    "defaultZoom": 1.0,
     "rtl": false
   },
   "source": {
