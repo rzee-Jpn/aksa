@@ -6,9 +6,9 @@ const ZOOM_STEP = 0.1;
 const params = new URLSearchParams(location.search);
 const bookId = params.get("book");
 
-const container   = document.getElementById("panelContainer");
-const pageInfo    = document.getElementById("pageInfo");
-const titleBox    = document.getElementById("bookTitle");
+const container = document.getElementById("panelContainer");
+const pageInfo  = document.getElementById("pageInfo");
+const titleBox  = document.getElementById("bookTitle");
 
 const PDF_BASE = "https://cdn.jsdelivr.net/gh/rzee-Jpn/aksa@main/data/books";
 
@@ -49,38 +49,41 @@ pdfjsLib.getDocument(`${PDF_BASE}/${bookId}/book.pdf`).promise
 function renderPanel(){
   container.innerHTML = "";
   const start = currentPage;
-  const end   = Math.min(start + panelSize - 1, totalPages);
+  const end   = Math.min(currentPage + panelSize -1, totalPages);
 
   for(let i=start;i<=end;i++) renderPage(i);
 
   pageInfo.textContent = `Hal ${start}–${end} / ${totalPages}`;
   localStorage.setItem(bookId+"_page", start);
 
-  applyZoom(); // update zoom CSS
+  applyZoom(); // pastikan zoom diterapkan
 }
 
-/* ===== Render Page dengan wrapper ===== */
+/* ===== Render Page ===== */
 function renderPage(num){
   pdfDoc.getPage(num).then(page=>{
+    const viewport = page.getViewport({ scale: 1.4 });
+
     const wrapper = document.createElement("div");
     wrapper.className = "canvasWrapper";
     wrapper.style.margin = "10px 0";
     wrapper.style.overflow = "hidden";
+    // Set tinggi wrapper dulu sesuai zoom
+    wrapper.style.height = `${viewport.height * zoomLevel}px`;
 
     const canvas = document.createElement("canvas");
     canvas.className = "pdfCanvas";
-    const ctx = canvas.getContext("2d");
-
-    const viewport = page.getViewport({ scale: 1.4 });
     canvas.width  = viewport.width;
     canvas.height = viewport.height;
 
     wrapper.appendChild(canvas);
     container.appendChild(wrapper);
 
-    page.render({ canvasContext: ctx, viewport }).promise.then(() => {
-      // pastikan wrapper ikut tinggi canvas
-      wrapper.style.height = `${canvas.height * zoomLevel}px`;
+    // Render PDF di canvas
+    page.render({ canvasContext: canvas.getContext("2d"), viewport }).promise.then(() => {
+      // pastikan canvas scale sudah diterapkan
+      canvas.style.transformOrigin = "top center";
+      canvas.style.transform = `scale(${zoomLevel})`;
     });
   });
 }
@@ -100,14 +103,16 @@ document.getElementById("prevBtn").onclick = ()=>{
   }
 };
 
-/* ===== Zoom CSS ===== */
+/* ===== Zoom Control ===== */
 function applyZoom(){
   const wrappers = container.querySelectorAll(".canvasWrapper");
   wrappers.forEach(wrapper=>{
     const canvas = wrapper.querySelector("canvas");
+    // update transform
     canvas.style.transformOrigin = "top center";
     canvas.style.transform = `scale(${zoomLevel})`;
-    wrapper.style.height = `${canvas.height * zoomLevel}px`; // kunci jarak antar canvas
+    // update wrapper height sesuai zoom
+    wrapper.style.height = `${canvas.height * zoomLevel}px`;
   });
 }
 
