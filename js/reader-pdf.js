@@ -5,77 +5,53 @@ const container = document.getElementById("panelContainer");
 const pageInfo = document.getElementById("pageInfo");
 const titleBox = document.getElementById("bookTitle");
 
-const PDF_BASE = "https://cdn.jsdelivr.net/gh/rzee-Jpn/aksa@main/data/books";
+const PDF_BASE = "https://rzee-jpn.github.io/aksa/data/books";
 
-let pdfDoc = null;
-let currentPage = 1;
-let panelSize = 10;
-let totalPages = 0;
-
-// sanity check
 if (!bookId) {
   container.innerHTML = "<p>❌ Parameter buku tidak ada</p>";
   throw new Error("book param missing");
 }
 
-// load meta
+console.log("PDFJS:", window.pdfjsLib);
+console.log("BOOK:", bookId);
+console.log("PDF:", `${PDF_BASE}/${bookId}/book.pdf`);
+
+let pdfDoc = null;
+let currentPage = 1;
+let panelSize = 5;
+let totalPages = 0;
+
 fetch(`${PDF_BASE}/${bookId}/meta.json`)
   .then(r => r.json())
   .then(meta => titleBox.textContent = meta.title)
   .catch(() => titleBox.textContent = bookId);
 
-// load PDF
-pdfjsLib.getDocument({
-  url: `${PDF_BASE}/${bookId}/book.pdf`,
-  withCredentials: false
-}).promise.then(pdf => {
-  pdfDoc = pdf;
-  totalPages = pdf.numPages;
-
-  const saved = localStorage.getItem(bookId + "_page");
-  if (saved) currentPage = parseInt(saved);
-
-  renderPanel();
-}).catch(err => {
-  console.error("PDF ERROR:", err);
-  container.innerHTML = "<p style='text-align:center'>❌ PDF gagal dimuat</p>";
-});
+pdfjsLib.getDocument(`${PDF_BASE}/${bookId}/book.pdf`)
+  .promise.then(pdf => {
+    pdfDoc = pdf;
+    totalPages = pdf.numPages;
+    renderPanel();
+  }).catch(err => {
+    console.error(err);
+    container.innerHTML = "❌ PDF gagal dimuat";
+  });
 
 function renderPanel() {
   container.innerHTML = "";
   const start = currentPage;
   const end = Math.min(start + panelSize - 1, totalPages);
 
-  for (let i = start; i <= end; i++) renderPage(i);
-
-  pageInfo.textContent = `Hal ${start}–${end} / ${totalPages}`;
-  localStorage.setItem(bookId + "_page", start);
-}
-
-function renderPage(num) {
-  pdfDoc.getPage(num).then(page => {
-    const canvas = document.createElement("canvas");
-    const ctx = canvas.getContext("2d");
-
-    const viewport = page.getViewport({ scale: 1.4 });
-    canvas.width = viewport.width;
-    canvas.height = viewport.height;
-
-    container.appendChild(canvas);
-    page.render({ canvasContext: ctx, viewport });
-  });
-}
-
-document.getElementById("nextBtn").onclick = () => {
-  if (currentPage + panelSize <= totalPages) {
-    currentPage += panelSize;
-    renderPanel();
+  for (let i = start; i <= end; i++) {
+    pdfDoc.getPage(i).then(page => {
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+      const viewport = page.getViewport({ scale: 1.3 });
+      canvas.width = viewport.width;
+      canvas.height = viewport.height;
+      container.appendChild(canvas);
+      page.render({ canvasContext: ctx, viewport });
+    });
   }
-};
 
-document.getElementById("prevBtn").onclick = () => {
-  if (currentPage - panelSize >= 1) {
-    currentPage -= panelSize;
-    renderPanel();
-  }
-};
+  pageInfo.textContent = `${start}-${end} / ${totalPages}`;
+}
