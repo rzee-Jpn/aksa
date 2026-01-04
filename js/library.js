@@ -1,15 +1,16 @@
 fetch("data/library.json")
   .then(r => r.json())
   .then(data => {
+
     const books = data.books;
 
     const allBooksEl = document.getElementById("allBooks");
-    const latestEl   = document.getElementById("latestBooks");
-    const popularEl  = document.getElementById("popularBooks");
-    const catListEl  = document.getElementById("categoryList");
-    const searchInp  = document.getElementById("searchInput");
+    const latestEl  = document.getElementById("latestBooks");
+    const popularEl = document.getElementById("popularBooks");
+    const catListEl = document.getElementById("categoryList");
+    const searchInp = document.getElementById("searchInput");
 
-    // ========= UTIL =========
+    /* ===== Render util ===== */
     function renderBooks(list, target) {
       target.innerHTML = "";
       list.forEach(b => {
@@ -27,27 +28,36 @@ fetch("data/library.json")
       });
     }
 
-    // ========= ALL =========
+    /* ===== Semua ===== */
     renderBooks(books, allBooksEl);
 
-    // ========= TERBARU =========
-    renderBooks(books.slice(-10).reverse(), latestEl);
+    /* ===== Terbaru (10 terakhir) ===== */
+    renderBooks(
+      books.slice(-10).reverse(),
+      latestEl
+    );
 
-    // ========= POPULER (dummy/random) =========
-    renderBooks([...books].sort(() => 0.5 - Math.random()).slice(0, 6), popularEl);
+    /* ===== Populer (dummy/random) ===== */
+    renderBooks(
+      [...books].sort(() => 0.5 - Math.random()).slice(0, 6),
+      popularEl
+    );
 
-    // ========= KATEGORI =========
+    /* ===== Kategori ===== */
     const categories = [...new Set(books.map(b => b.category))];
     categories.forEach(cat => {
       const li = document.createElement("li");
       li.textContent = cat;
       li.onclick = () => {
-        renderBooks(books.filter(b => b.category === cat), allBooksEl);
+        renderBooks(
+          books.filter(b => b.category === cat),
+          allBooksEl
+        );
       };
       catListEl.appendChild(li);
     });
 
-    // ========= SEARCH =========
+    /* ===== Search ===== */
     searchInp.oninput = () => {
       const q = searchInp.value.toLowerCase();
       renderBooks(
@@ -59,4 +69,5 @@ fetch("data/library.json")
         allBooksEl
       );
     };
+
   });
