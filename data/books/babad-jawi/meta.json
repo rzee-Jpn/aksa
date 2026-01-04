@@ -2,7 +2,7 @@
   "id": "babad-jawi",
   "title": "Babad Tanah Jawi",
   "subtitle": "Revised Prose Version",
-  "author": ""C.F. Winter Sr",
+  "author": "C.F. Winter Sr",
   "editor": "Willem Remmelink",
   "language": "English; Javanese",
   "script": "Jawa",
@@ -11,10 +11,10 @@
     "Sastra Klasik"
   ],
   "tags": [
-    javanese", "history", "prose", "early-modern", "java
+    javanese", "history", "prose", "early-modern", "java"
   ],
   "year": "1800-an",
-  "description": A revised prose version of the Babad Tanah Jawi originally prepared by C.F. Winter Sr. as an early attempt to standardize formal Javanese prose, presenting Javanese history from its beginnings until 1742, published with Javanese script and English translation.",
+  "description": "A revised prose version of the Babad Tanah Jawi originally prepared by C.F. Winter Sr. as an early attempt to standardize formal Javanese prose, presenting Javanese history from its beginnings until 1742, published with Javanese script and English" translation.",
   "cover": "cover.jpg",
   "pdf": "book.pdf",
   "reading": {
