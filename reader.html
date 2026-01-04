@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="css/reader.css">
 <link rel="stylesheet" href="css/theme.css">
 
-<!-- PDF.JS STABIL -->
+<!-- PDF.JS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script>
 pdfjsLib.GlobalWorkerOptions.workerSrc =
@@ -18,41 +18,42 @@ pdfjsLib.GlobalWorkerOptions.workerSrc =
 </script>
 
 <style>
-/* Zoom floating button */
-#zoomControls {
+/* Floating Zoom Control */
+#zoomControl {
   position: fixed;
-  bottom: 20px;
+  bottom: 80px;
   right: 20px;
-  background: rgba(240,240,240,0.9);
-  border-radius: 12px;
-  padding: 6px;
-  display: flex;
-  gap: 4px;
-  z-index: 999;
-  transition: opacity 0.3s;
-}
-#zoomControls button {
-  width: 32px;
-  height: 32px;
-  font-size: 18px;
-  border: none;
+  background: rgba(0,0,0,0.6);
+  color: #fff;
   border-radius: 6px;
+  padding: 8px 10px;
+  display: flex;
+  gap: 6px;
+  font-size: 1.1rem;
+  z-index: 999;
+  transition: opacity 0.3s ease;
+}
+
+#zoomControl button {
   background: #fff;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  color: #000;
+  border: none;
+  padding: 2px 8px;
+  font-weight: bold;
+  border-radius: 4px;
   cursor: pointer;
 }
-#zoomControls.hide { opacity: 0; pointer-events: none; }
 </style>
 </head>
 
 <body class="theme-paper">
 
 <header class="reader-header">
-  <button onclick="history.back()">←</button>
+  <button id="backBtn" onclick="history.back()">←</button>
   <div id="bookTitle">Memuat…</div>
 </header>
 
-<main id="panelContainer" style="overflow-y:auto; height:calc(100vh - 60px);"></main>
+<main id="panelContainer"></main>
 
 <footer class="reader-footer">
   <button id="prevBtn">◀</button>
@@ -60,24 +61,13 @@ pdfjsLib.GlobalWorkerOptions.workerSrc =
   <button id="nextBtn">▶</button>
 </footer>
 
-<!-- Floating Zoom -->
-<div id="zoomControls">
+<!-- Zoom Control -->
+<div id="zoomControl">
   <button id="zoomOut">−</button>
+  <span id="zoomLevelDisplay">100%</span>
   <button id="zoomIn">＋</button>
 </div>
 
 <script src="js/reader-pdf.js"></script>
-<script>
-/* Scroll hide zoom */
-let panelContainer = document.getElementById("panelContainer");
-let zoomBox = document.getElementById("zoomControls");
-let scrollTimeout;
-panelContainer.addEventListener("scroll", () => {
-  zoomBox.classList.add("hide");
-  clearTimeout(scrollTimeout);
-  scrollTimeout = setTimeout(() => zoomBox.classList.remove("hide"), 800);
-});
-</script>
-
 </body>
 </html>
