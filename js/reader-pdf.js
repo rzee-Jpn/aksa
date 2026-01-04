@@ -1,8 +1,8 @@
 let zoomLevel = 1.4;
+const BASE_ZOOM = 1.4;
 const ZOOM_MIN = 0.6;
 const ZOOM_MAX = 2.5;
 const ZOOM_STEP = 0.1;
-const BASE_ZOOM = 1.4;
 
 const params = new URLSearchParams(location.search);
 const bookId = params.get("book");
@@ -116,7 +116,7 @@ document.getElementById("zoomOut").onclick = ()=>{
   updateZoomDisplay();
 };
 
-/* ===== LOCK / UNLOCK ===== */
+/* ===== LOCK / UNLOCK (klik %) ===== */
 zoomText.onclick = ()=>{
   lockHorizontal = !lockHorizontal;
   container.classList.toggle("lock-x", lockHorizontal);
