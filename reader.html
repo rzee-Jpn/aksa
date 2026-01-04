@@ -9,15 +9,18 @@
 <link rel="stylesheet" href="css/reader.css">
 <link rel="stylesheet" href="css/theme.css">
 
+<!-- PDF.JS CORE -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.min.js"></script>
 <script>
   pdfjsLib.GlobalWorkerOptions.workerSrc =
     "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.worker.min.js";
 </script>
+</head>
 
 <body class="theme-paper">
 
 <header class="reader-header">
-  <button id="backBtn">←</button>
+  <button id="backBtn" onclick="history.back()">←</button>
   <div id="bookTitle">Memuat…</div>
 </header>
 
