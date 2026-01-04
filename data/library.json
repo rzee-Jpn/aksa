@@ -1,7 +1,7 @@
 {
   "version": "1.0",
   "updated": "2025-01-01",
-  "total_books": 1,
+  "total_books": 2,
 
   "books": [
     {
@@ -13,6 +13,17 @@
       "category": "Sejarah",
       "cover": "data/books/babad-jawi/cover.jpg",
       "path": "reader.html?book=babad-jawi"
+    },
+
+    {
+      "id": "suma-oriental-pires",
+      "title": "The Suma Oriental of Tomé Pires",
+      "author": "Tomé Pires",
+      "year": "1512–1515",
+      "language": "English",
+      "category": "Travel",
+      "cover": "data/books/suma-oriental-pires/cover.jpg",
+      "path": "reader.html?book=suma-oriental-pires"
     }
   ]
 }
