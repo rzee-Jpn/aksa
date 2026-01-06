@@ -21,6 +21,20 @@ let currentPage = 1;
 let panelSize   = 10;
 let totalPages  = 0;
 
+/* ===== Browser Check (Opera Mini / lama) ===== */
+function browserNotSupported(){
+  container.innerHTML = `
+    <div style="text-align:center;padding:40px;font-size:15px">
+      ❌ Browser tidak mendukung PDF Viewer<br><br>
+      Gunakan <b>Chrome / Edge / Firefox terbaru</b>
+    </div>`;
+  throw new Error("Unsupported browser");
+}
+
+if (!window.Promise || !window.fetch || !window.URLSearchParams) {
+  browserNotSupported();
+}
+
 /* ===== Zoom label ===== */
 function updateZoomLabel(){
   zoomLabel.textContent = Math.round(zoomLevel * 100) + "%";
@@ -39,7 +53,11 @@ fetch(`${PDF_BASE}/${bookId}/meta.json`)
   .catch(() => titleBox.textContent = bookId);
 
 /* ===== Load PDF ===== */
-pdfjsLib.getDocument(`${PDF_BASE}/${bookId}/book.pdf`).promise.then(pdf=>{
+pdfjsLib.getDocument({
+  url: `${PDF_BASE}/${bookId}/book.pdf`,
+  disableStream: true,
+  disableAutoFetch: true
+}).promise.then(pdf=>{
   pdfDoc = pdf;
   totalPages = pdf.numPages;
 
@@ -47,10 +65,21 @@ pdfjsLib.getDocument(`${PDF_BASE}/${bookId}/book.pdf`).promise.then(pdf=>{
   if(saved) currentPage = parseInt(saved);
 
   renderPanel();
+}).catch(err=>{
+  console.error(err);
+  browserNotSupported();
 });
+
+/* ===== Clear memory ===== */
+function clearPanels(){
+  container.querySelectorAll("canvas").forEach(c=>{
+    c.width = c.height = 0;
+  });
+}
 
 /* ===== Render Panel ===== */
 function renderPanel(){
+  clearPanels();
   container.innerHTML = "";
 
   const start = currentPage;
@@ -71,29 +100,23 @@ function renderPage(num){
     const dpr = isHD ? Math.min(window.devicePixelRatio || 1, 2) : 1;
 
     const viewport = page.getViewport({ scale: zoomLevel });
-    const renderViewport = page.getViewport({
-      scale: zoomLevel * dpr
-    });
+    const renderViewport = page.getViewport({ scale: zoomLevel * dpr });
 
     const wrapper = document.createElement("div");
     wrapper.className = "canvasWrapper";
 
     const canvas = document.createElement("canvas");
-    const ctx = canvas.getContext("2d");
+    const ctx = canvas.getContext("2d", { alpha: false });
 
     canvas.width  = renderViewport.width;
     canvas.height = renderViewport.height;
-
     canvas.style.width  = viewport.width + "px";
     canvas.style.height = viewport.height + "px";
 
     wrapper.appendChild(canvas);
     container.appendChild(wrapper);
 
-    page.render({
-      canvasContext: ctx,
-      viewport: renderViewport
-    });
+    page.render({ canvasContext: ctx, viewport: renderViewport });
   });
 }
 
@@ -112,7 +135,7 @@ document.getElementById("prevBtn").onclick = ()=>{
   }
 };
 
-/* ===== Zoom Control ===== */
+/* ===== Zoom ===== */
 document.getElementById("zoomIn").onclick = ()=>{
   zoomLevel = Math.min(ZOOM_MAX, zoomLevel + ZOOM_STEP);
   renderPanel();
@@ -123,7 +146,7 @@ document.getElementById("zoomOut").onclick = ()=>{
   renderPanel();
 };
 
-/* ===== HD Toggle ===== */
+/* ===== HD ===== */
 hdBtn.onclick = ()=>{
   isHD = !isHD;
   hdBtn.textContent = isHD ? "HD ON" : "HD OFF";
