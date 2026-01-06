@@ -1,5 +1,3 @@
-document.getElementById("backBtn").onclick = () => history.back();
-
 let zen = false;
 document.body.addEventListener("dblclick", () => {
   zen = !zen;
